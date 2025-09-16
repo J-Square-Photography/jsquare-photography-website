@@ -17,7 +17,9 @@ export const CameraHero = () => {
   useEffect(() => {
     // Detect mobile device
     const checkMobile = () => {
-      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                    ('ontouchstart' in window) ||
+                    (navigator.maxTouchPoints > 0)
       setIsMobile(mobile)
       return mobile
     }
@@ -39,9 +41,13 @@ export const CameraHero = () => {
         }
       }
 
-      // Request permission for iOS devices
-      const requestPermission = async () => {
-        if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+      // Check if iOS and needs permission
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      const needsPermission = isIOS && typeof (DeviceOrientationEvent as any).requestPermission === 'function'
+
+      if (needsPermission) {
+        // iOS devices need permission
+        const requestPermission = async () => {
           try {
             const response = await (DeviceOrientationEvent as any).requestPermission()
             if (response === 'granted') {
@@ -51,28 +57,30 @@ export const CameraHero = () => {
           } catch (error) {
             console.error('Error requesting device orientation permission:', error)
           }
-        } else {
-          // Non-iOS devices don't need permission
-          setHasPermission(true)
-          window.addEventListener('deviceorientation', handleOrientation)
         }
-      }
 
-      // Add click handler to request permission on iOS
-      const handleClick = () => {
-        if (!hasPermission) {
-          requestPermission()
+        // Add click handler to request permission on iOS
+        const handleClick = () => {
+          if (!hasPermission) {
+            requestPermission()
+          }
         }
-      }
 
-      if (!hasPermission) {
         window.addEventListener('click', handleClick)
         requestPermission() // Try to request immediately
-      }
 
-      return () => {
-        window.removeEventListener('deviceorientation', handleOrientation)
-        window.removeEventListener('click', handleClick)
+        return () => {
+          window.removeEventListener('deviceorientation', handleOrientation)
+          window.removeEventListener('click', handleClick)
+        }
+      } else {
+        // Android and other devices don't need permission
+        setHasPermission(true)
+        window.addEventListener('deviceorientation', handleOrientation)
+
+        return () => {
+          window.removeEventListener('deviceorientation', handleOrientation)
+        }
       }
     }
   }, [hasPermission, isMobile])
