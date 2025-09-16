@@ -10,8 +10,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "J Square Photography - Professional Photography & Videography",
-  description: "Capturing moments since 2017. Professional photography and videography services for weddings, corporate events, graduations, and more.",
+  title: "J Square Photography",
+  description: "Crafting Timeless Media, Video, and Photo Moments for Singapore.",
   keywords: ["photography", "videography", "wedding photography", "corporate events", "professional photographer", "event videography", "portrait photography", "landscape photography", "J Square Photography", "jsquarephotography", "jsquarephotographysg", "photobooth services", "Film","Event photography","Event videography","Graduation photography","Graduation videography","Cinematic videography"],
 };
 
