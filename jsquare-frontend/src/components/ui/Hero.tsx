@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Scene } from '@/components/canvas/Scene'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
+import { useTheme } from 'next-themes'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -13,6 +14,12 @@ export const Hero = () => {
   const titleRef = useRef<HTMLDivElement>(null)
   const subtitleRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const hero = heroRef.current
@@ -84,16 +91,18 @@ export const Hero = () => {
 
       {/* Content Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none" style={{ zIndex: 10 }}>
-        {/* Logo */}
+        {/* Logo - switches based on theme */}
         <div ref={logoRef} className="mb-8">
-          <Image
-            src="/jsquared_landscape_dark.png"
-            alt="J Square Photography"
-            width={300}
-            height={120}
-            priority
-            className="h-20 w-auto opacity-90"
-          />
+          {mounted && (
+            <Image
+              src={theme === 'dark' ? "/jsquare_landscape_white.png" : "/jsquare_landscape_dark.png"}
+              alt="J Square Photography"
+              width={300}
+              height={120}
+              priority
+              className="h-20 w-auto opacity-90"
+            />
+          )}
         </div>
 
         {/* Main Title */}
@@ -107,10 +116,10 @@ export const Hero = () => {
 
         {/* Subtitle */}
         <div ref={subtitleRef} className="max-w-2xl mx-auto">
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-light leading-relaxed tracking-wide">
+          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light leading-relaxed tracking-wide">
             Professional photography & videography services
             <br />
-            <span className="text-base">Since 2017</span>
+            <span className="text-base text-gray-600 dark:text-gray-400">Since 2017</span>
           </p>
         </div>
 

@@ -3,6 +3,7 @@
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useEffect, useState } from 'react'
 import { CameraHero } from './CameraHero'
+import { useTheme } from 'next-themes'
 
 interface SceneProps {
   className?: string
@@ -10,6 +11,7 @@ interface SceneProps {
 
 export const Scene = ({ className = '' }: SceneProps) => {
   const [mounted, setMounted] = useState(false)
+  const { theme } = useTheme()
 
   useEffect(() => {
     setMounted(true)
@@ -32,8 +34,8 @@ export const Scene = ({ className = '' }: SceneProps) => {
       <Canvas
         shadows
         camera={{
-          position: [0, 0, 8],
-          fov: 45,
+          position: [0, 0, 10],
+          fov: 60,
           near: 0.1,
           far: 1000
         }}
@@ -44,7 +46,7 @@ export const Scene = ({ className = '' }: SceneProps) => {
         }}
         dpr={[1, 2]}
       >
-        <color attach="background" args={['#fafafa']} />
+        <color attach="background" args={[theme === 'dark' ? '#0a0a0a' : '#fafafa']} />
         <Suspense fallback={null}>
           {/* Softer, more subtle lighting */}
           <ambientLight intensity={0.5} />
