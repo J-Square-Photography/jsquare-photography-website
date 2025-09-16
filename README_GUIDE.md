@@ -494,10 +494,10 @@ vercel --prod
 
 ## 📞 Support & Contact
 
-- **Developer**: [Your Name]
-- **Email**: support@jsquarephotography.com
-- **Documentation**: [Link to docs]
-- **Issues**: [GitHub Issues]
+- **Developer**: Jian Jie
+- **Email**: jsquarephotographysg@gmail.com
+- **Documentation**: none yet
+- **Issues**: none yet
 
 ---
 
