@@ -39,3 +39,29 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Screenshots and temporary images
+Screenshot*.png
+*.tmp.png
+*.tmp.jpg
+
+# Claude-specific files
+.claude/
+
+# Platform-specific documentation
+README_PLATFORM_ISSUES.md
+
+# Temporary/test files
+nul
+*.bak
+*.backup
+
+# Windows specific
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
