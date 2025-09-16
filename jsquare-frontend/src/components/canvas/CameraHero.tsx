@@ -8,95 +8,99 @@ export const CameraHero = () => {
   const viewfinderRef = useRef<THREE.Group>(null)
   const mouseRef = useRef({ x: 0, y: 0 })
   const orientationRef = useRef({ beta: 0, gamma: 0 })
-  const [isMobile, setIsMobile] = useState(false)
   const [hasPermission, setHasPermission] = useState(false)
   const { viewport } = useThree()
   const [time, setTime] = useState(0)
+  const [useMouse, setUseMouse] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = () => {
+      setUseMouse(true);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   // Setup device orientation for mobile
   useEffect(() => {
-    // Detect mobile device
-    const checkMobile = () => {
-      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                    ('ontouchstart' in window) ||
-                    (navigator.maxTouchPoints > 0)
-      setIsMobile(mobile)
-      return mobile
+    // Handle device orientation
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      if (event.beta !== null && event.gamma !== null) {
+        // Beta: -180 to 180 (front-back tilt)
+        // Gamma: -90 to 90 (left-right tilt)
+        // Normalize values to -1 to 1 range
+        const normalizedBeta = Math.max(-1, Math.min(1, event.beta / 45))
+        const normalizedGamma = Math.max(-1, Math.min(1, event.gamma / 45))
+
+        orientationRef.current.beta = normalizedBeta
+        orientationRef.current.gamma = normalizedGamma
+      }
     }
 
-    const mobile = checkMobile()
+    // Check if iOS and needs permission
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+    const needsPermission = isIOS && typeof (DeviceOrientationEvent as any).requestPermission === 'function'
 
-    if (mobile) {
-      // Handle device orientation
-      const handleOrientation = (event: DeviceOrientationEvent) => {
-        if (event.beta !== null && event.gamma !== null) {
-          // Beta: -180 to 180 (front-back tilt)
-          // Gamma: -90 to 90 (left-right tilt)
-          // Normalize values to -1 to 1 range
-          const normalizedBeta = Math.max(-1, Math.min(1, event.beta / 45))
-          const normalizedGamma = Math.max(-1, Math.min(1, event.gamma / 45))
-
-          orientationRef.current.beta = normalizedBeta
-          orientationRef.current.gamma = normalizedGamma
+    if (needsPermission) {
+      // iOS devices need permission
+      const requestPermission = async () => {
+        try {
+          const response = await (DeviceOrientationEvent as any).requestPermission()
+          if (response === 'granted') {
+            setHasPermission(true)
+            window.addEventListener('deviceorientation', handleOrientation)
+          }
+        } catch (error) {
+          console.error('Error requesting device orientation permission:', error)
         }
       }
 
-      // Check if iOS and needs permission
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      const needsPermission = isIOS && typeof (DeviceOrientationEvent as any).requestPermission === 'function'
-
-      if (needsPermission) {
-        // iOS devices need permission
-        const requestPermission = async () => {
-          try {
-            const response = await (DeviceOrientationEvent as any).requestPermission()
-            if (response === 'granted') {
-              setHasPermission(true)
-              window.addEventListener('deviceorientation', handleOrientation)
-            }
-          } catch (error) {
-            console.error('Error requesting device orientation permission:', error)
-          }
-        }
-
-        // Add click handler to request permission on iOS
-        const handleClick = () => {
-          if (!hasPermission) {
-            requestPermission()
-          }
-        }
-
-        window.addEventListener('click', handleClick)
-        requestPermission() // Try to request immediately
-
-        return () => {
-          window.removeEventListener('deviceorientation', handleOrientation)
-          window.removeEventListener('click', handleClick)
-        }
-      } else {
-        // Android and other devices don't need permission
-        setHasPermission(true)
-        window.addEventListener('deviceorientation', handleOrientation)
-
-        return () => {
-          window.removeEventListener('deviceorientation', handleOrientation)
+      // Add click handler to request permission on iOS
+      const handleClick = () => {
+        if (!hasPermission) {
+          requestPermission()
         }
       }
+
+      window.addEventListener('click', handleClick)
+      requestPermission() // Try to request immediately
+
+      return () => {
+        window.removeEventListener('deviceorientation', handleOrientation)
+        window.removeEventListener('click', handleClick)
+      }
+    } else {
+      // Android and other devices don't need permission
+      setHasPermission(true)
+      window.addEventListener('deviceorientation', handleOrientation)
+
+      return () => {
+        window.removeEventListener('deviceorientation', handleOrientation)
+      }
     }
-  }, [hasPermission, isMobile])
+  }, [hasPermission])
 
   // Track mouse movement or gyroscope and animate viewfinder
   useFrame((state, delta) => {
     let x, y
 
-    if (isMobile && hasPermission) {
+    if (useMouse) {
+      // Use mouse for desktop
+      x = state.mouse.x
+      y = state.mouse.y
+    } else if (hasPermission) {
       // Use gyroscope data for mobile
       x = orientationRef.current.gamma
       y = orientationRef.current.beta
     } else {
-      // Use mouse for desktop
-      x = state.mouse.x
-      y = state.mouse.y
+      // Fallback to mouse if no permissions
+      x = state.mouse.x;
+      y = state.mouse.y;
     }
 
     // Smooth tracking
