@@ -141,7 +141,7 @@ const GET_LATEST_STORIES = `
 
 export const getGalleries = async (first = 10, after?: string): Promise<{ galleries: GalleryPost[], hasNextPage: boolean, endCursor?: string }> => {
   try {
-    const data = await graphqlClient.request(GET_GALLERIES, { first, after })
+    const data: any = await graphqlClient.request(GET_GALLERIES, { first, after })
     return {
       galleries: data.posts.nodes,
       hasNextPage: data.posts.pageInfo.hasNextPage,
@@ -155,7 +155,7 @@ export const getGalleries = async (first = 10, after?: string): Promise<{ galler
 
 export const getGalleryBySlug = async (slug: string): Promise<GalleryPost | null> => {
   try {
-    const data = await graphqlClient.request(GET_GALLERY_BY_SLUG, { slug })
+    const data: any = await graphqlClient.request(GET_GALLERY_BY_SLUG, { slug })
     return data.postBy
   } catch (error) {
     console.error('Error fetching gallery:', error)
@@ -165,7 +165,7 @@ export const getGalleryBySlug = async (slug: string): Promise<GalleryPost | null
 
 export const getLatestStories = async (first = 6): Promise<StoryPost[]> => {
   try {
-    const data = await graphqlClient.request(GET_LATEST_STORIES, { first })
+    const data: any = await graphqlClient.request(GET_LATEST_STORIES, { first })
     return data.posts.nodes
   } catch (error) {
     console.error('Error fetching stories:', error)
@@ -209,7 +209,7 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
   `
   
   try {
-    const data = await graphqlClient.request(GET_GALLERIES_BY_CATEGORY, { categorySlug, first })
+    const data: any = await graphqlClient.request(GET_GALLERIES_BY_CATEGORY, { categorySlug, first })
     return data.posts.nodes
   } catch (error) {
     console.error('Error fetching galleries by category:', error)
