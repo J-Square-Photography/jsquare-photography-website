@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -20,9 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${montserrat.variable} font-sans antialiased bg-white text-[#3a3a3c]`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${montserrat.variable} font-sans antialiased bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-200`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

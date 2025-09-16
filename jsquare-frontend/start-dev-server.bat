@@ -30,8 +30,12 @@ if exist ".next" rmdir /s /q ".next"
 if exist "node_modules\.cache" rmdir /s /q "node_modules\.cache"
 echo.
 
+echo Checking for common Windows module issues...
+echo (Note: Using standard Tailwind CSS to avoid lightningcss binary issues)
+echo.
+
 echo Installing dependencies...
-call npm install
+call npm install --legacy-peer-deps
 if errorlevel 1 (
     echo ERROR: npm install failed
     pause
@@ -39,7 +43,7 @@ if errorlevel 1 (
 )
 echo.
 
-echo Starting Next.js development server with Turbopack...
+echo Starting Next.js development server...
 echo.
 echo ==========================================
 echo  Server will start on http://localhost:3000

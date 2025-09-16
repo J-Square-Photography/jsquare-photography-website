@@ -1,65 +1,67 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { CameraHero } from './CameraHero'
-import { Environment } from '@react-three/drei'
 
 interface SceneProps {
   className?: string
 }
 
 export const Scene = ({ className = '' }: SceneProps) => {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className={`relative ${className}`} style={{ width: '100%', height: '100%' }}>
+        <div style={{
+          width: '100%',
+          height: '100%',
+          background: 'white'
+        }} />
+      </div>
+    )
+  }
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={{ width: '100%', height: '100%' }}>
       <Canvas
         shadows
-        camera={{ 
-          position: [0, 0, 5], 
+        camera={{
+          position: [0, 0, 8],
           fov: 45,
           near: 0.1,
           far: 1000
         }}
-        gl={{ 
+        gl={{
           antialias: true,
           alpha: true,
-          powerPreference: "high-performance" 
+          powerPreference: "high-performance"
         }}
         dpr={[1, 2]}
-        style={{ touchAction: 'none' }}
+        style={{
+          background: 'white'
+        }}
       >
         <Suspense fallback={null}>
-          {/* Soft ambient lighting for photography aesthetic */}
-          <ambientLight intensity={0.4} />
-          <directionalLight 
-            position={[10, 10, 5]} 
-            intensity={0.8}
+          {/* Lighting setup */}
+          <ambientLight intensity={0.6} />
+          <directionalLight
+            position={[10, 10, 5]}
+            intensity={1.2}
             castShadow
             shadow-mapSize={[2048, 2048]}
-            shadow-camera-far={50}
-            shadow-camera-left={-10}
-            shadow-camera-right={10}
-            shadow-camera-top={10}
-            shadow-camera-bottom={-10}
           />
-          
-          {/* Subtle point light for depth */}
-          <pointLight 
-            position={[-10, -10, -10]} 
-            intensity={0.3} 
-            color="#3a3a3c"
-          />
-          
-          {/* Professional studio environment */}
-          <Environment preset="studio" />
-          
-          {/* Hero camera model */}
+          <pointLight position={[-10, -10, -10]} intensity={0.5} />
+
+          {/* 3D Camera Model */}
           <CameraHero />
         </Suspense>
       </Canvas>
-      
-      {/* Gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none" />
     </div>
   )
 }
