@@ -16,10 +16,37 @@ export const Hero = () => {
   const logoRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [showMotionPrompt, setShowMotionPrompt] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+
+    // Check if mobile and iOS
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      const iOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      setIsMobile(mobile)
+
+      // Show motion prompt for iOS devices
+      if (iOS && typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        setShowMotionPrompt(true)
+      }
+    }
+
+    checkMobile()
   }, [])
+
+  const handleMotionPermission = async () => {
+    try {
+      const response = await (DeviceOrientationEvent as any).requestPermission()
+      if (response === 'granted') {
+        setShowMotionPrompt(false)
+      }
+    } catch (error) {
+      console.error('Motion permission error:', error)
+    }
+  }
 
   useEffect(() => {
     const hero = heroRef.current
@@ -133,6 +160,26 @@ export const Hero = () => {
 
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20 dark:to-black/20 pointer-events-none" style={{ zIndex: 5 }} />
+
+      {/* Motion permission prompt for iOS */}
+      {showMotionPrompt && (
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
+          <button
+            onClick={handleMotionPermission}
+            className="px-6 py-3 bg-white/90 dark:bg-black/90 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                Tap to enable motion controls
+              </span>
+            </div>
+          </button>
+        </div>
+      )}
     </section>
   )
 }

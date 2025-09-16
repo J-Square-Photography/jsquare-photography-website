@@ -1,22 +1,97 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
 export const CameraHero = () => {
   const viewfinderRef = useRef<THREE.Group>(null)
   const mouseRef = useRef({ x: 0, y: 0 })
+  const orientationRef = useRef({ beta: 0, gamma: 0 })
+  const [isMobile, setIsMobile] = useState(false)
+  const [hasPermission, setHasPermission] = useState(false)
   const { viewport } = useThree()
   const [time, setTime] = useState(0)
 
-  // Track mouse movement and animate viewfinder
-  useFrame((state, delta) => {
-    // Get mouse position from state
-    const x = state.mouse.x
-    const y = state.mouse.y
+  // Setup device orientation for mobile
+  useEffect(() => {
+    // Detect mobile device
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      setIsMobile(mobile)
+      return mobile
+    }
 
-    // Smooth mouse tracking
+    const mobile = checkMobile()
+
+    if (mobile) {
+      // Handle device orientation
+      const handleOrientation = (event: DeviceOrientationEvent) => {
+        if (event.beta !== null && event.gamma !== null) {
+          // Beta: -180 to 180 (front-back tilt)
+          // Gamma: -90 to 90 (left-right tilt)
+          // Normalize values to -1 to 1 range
+          const normalizedBeta = Math.max(-1, Math.min(1, event.beta / 45))
+          const normalizedGamma = Math.max(-1, Math.min(1, event.gamma / 45))
+
+          orientationRef.current.beta = normalizedBeta
+          orientationRef.current.gamma = normalizedGamma
+        }
+      }
+
+      // Request permission for iOS devices
+      const requestPermission = async () => {
+        if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+          try {
+            const response = await (DeviceOrientationEvent as any).requestPermission()
+            if (response === 'granted') {
+              setHasPermission(true)
+              window.addEventListener('deviceorientation', handleOrientation)
+            }
+          } catch (error) {
+            console.error('Error requesting device orientation permission:', error)
+          }
+        } else {
+          // Non-iOS devices don't need permission
+          setHasPermission(true)
+          window.addEventListener('deviceorientation', handleOrientation)
+        }
+      }
+
+      // Add click handler to request permission on iOS
+      const handleClick = () => {
+        if (!hasPermission) {
+          requestPermission()
+        }
+      }
+
+      if (!hasPermission) {
+        window.addEventListener('click', handleClick)
+        requestPermission() // Try to request immediately
+      }
+
+      return () => {
+        window.removeEventListener('deviceorientation', handleOrientation)
+        window.removeEventListener('click', handleClick)
+      }
+    }
+  }, [hasPermission, isMobile])
+
+  // Track mouse movement or gyroscope and animate viewfinder
+  useFrame((state, delta) => {
+    let x, y
+
+    if (isMobile && hasPermission) {
+      // Use gyroscope data for mobile
+      x = orientationRef.current.gamma
+      y = orientationRef.current.beta
+    } else {
+      // Use mouse for desktop
+      x = state.mouse.x
+      y = state.mouse.y
+    }
+
+    // Smooth tracking
     mouseRef.current.x += (x - mouseRef.current.x) * 0.08
     mouseRef.current.y += (y - mouseRef.current.y) * 0.08
 
