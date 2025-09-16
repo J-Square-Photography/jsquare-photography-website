@@ -25,9 +25,23 @@ cd /d "D:\JSP Website redesign\jsquare-photography-website\jsquare-frontend"
 echo Changed directory to: %cd%
 echo.
 
-echo Cleaning cache...
-if exist ".next" rmdir /s /q ".next"
-if exist "node_modules\.cache" rmdir /s /q "node_modules\.cache"
+echo Cleaning Next.js cache completely...
+if exist ".next" (
+    echo Removing .next directory...
+    rmdir /s /q ".next" 2>nul
+    if exist ".next" (
+        echo Warning: Could not fully remove .next, trying with timeout...
+        timeout /t 2 >nul
+        rmdir /s /q ".next" 2>nul
+    )
+)
+
+if exist "node_modules\.cache" (
+    echo Removing node_modules cache...
+    rmdir /s /q "node_modules\.cache" 2>nul
+)
+
+echo Cache cleaned successfully!
 echo.
 
 echo Checking for common Windows module issues...

@@ -39,24 +39,23 @@ export const Scene = ({ className = '' }: SceneProps) => {
         }}
         gl={{
           antialias: true,
-          alpha: true,
+          alpha: false,
           powerPreference: "high-performance"
         }}
         dpr={[1, 2]}
-        style={{
-          background: 'white'
-        }}
       >
+        <color attach="background" args={['#fafafa']} />
         <Suspense fallback={null}>
-          {/* Lighting setup */}
-          <ambientLight intensity={0.6} />
+          {/* Softer, more subtle lighting */}
+          <ambientLight intensity={0.5} />
           <directionalLight
-            position={[10, 10, 5]}
-            intensity={1.2}
+            position={[5, 5, 5]}
+            intensity={0.8}
             castShadow
-            shadow-mapSize={[2048, 2048]}
+            shadow-mapSize={[1024, 1024]}
+            shadow-camera-near={0.1}
+            shadow-camera-far={50}
           />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
           {/* 3D Camera Model */}
           <CameraHero />
