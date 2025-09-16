@@ -88,6 +88,34 @@ export const Hero = () => {
       ease: "power3.out"
     }, "-=0.4")
 
+    // Parallax effect for text
+    const handleMouseMove = (event: MouseEvent) => {
+      const { clientX, clientY } = event;
+      const x = (clientX / window.innerWidth - 0.5) * 2;
+      const y = (clientY / window.innerHeight - 0.5) * 2;
+
+      gsap.to(title, { x: -x * 30, y: -y * 20, duration: 0.5, ease: 'power2.out' });
+      gsap.to(subtitle, { x: -x * 20, y: -y * 15, duration: 0.5, ease: 'power2.out' });
+      gsap.to(logo, { x: -x * 10, y: -y * 10, duration: 0.5, ease: 'power2.out' });
+    };
+
+    const handleDeviceOrientation = (event: DeviceOrientationEvent) => {
+      if (event.beta !== null && event.gamma !== null) {
+        const x = (event.gamma || 0) / 45; // Range: -1 to 1
+        const y = (event.beta || 0) / 45; // Range: -1 to 1
+
+        gsap.to(title, { x: -x * 30, y: -y * 20, duration: 0.5, ease: 'power2.out' });
+        gsap.to(subtitle, { x: -x * 20, y: -y * 15, duration: 0.5, ease: 'power2.out' });
+        gsap.to(logo, { x: -x * 10, y: -y * 10, duration: 0.5, ease: 'power2.out' });
+      }
+    };
+
+    if (isMobile) {
+      window.addEventListener('deviceorientation', handleDeviceOrientation);
+    } else {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
+
     // Scroll-driven parallax
     ScrollTrigger.create({
       trigger: hero,
@@ -105,9 +133,11 @@ export const Hero = () => {
     })
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('deviceorientation', handleDeviceOrientation);
     }
-  }, [])
+  }, [isMobile])
 
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden bg-white dark:bg-black transition-colors duration-200">

@@ -108,23 +108,23 @@ export const CameraHero = () => {
     mouseRef.current.y += (y - mouseRef.current.y) * 0.08
 
     if (viewfinderRef.current) {
-      // Subtle tilt based on mouse position
-      viewfinderRef.current.rotation.y = mouseRef.current.x * 0.1
-      viewfinderRef.current.rotation.x = -mouseRef.current.y * 0.08
+      // Increased tilt and position shift for more movement
+      viewfinderRef.current.rotation.y = mouseRef.current.x * 0.2;
+      viewfinderRef.current.rotation.x = -mouseRef.current.y * 0.15;
 
-      // Very subtle position shift for depth
-      viewfinderRef.current.position.x = mouseRef.current.x * 0.3
-      viewfinderRef.current.position.y = mouseRef.current.y * 0.2
+      viewfinderRef.current.position.x = mouseRef.current.x * 0.6;
+      viewfinderRef.current.position.y = mouseRef.current.y * 0.4;
     }
 
     // Update time for animations
     setTime(state.clock.elapsedTime)
   })
 
-  // Viewfinder dimensions - much larger, almost full screen
-  const width = 12
-  const height = 7
-  const cornerSize = 0.6
+  // Responsive viewfinder dimensions
+  const isMobile = viewport.width < 768; // Example breakpoint
+  const width = isMobile ? viewport.width * 0.9 : 12;
+  const height = isMobile ? viewport.height * 0.9 : 7;
+  const cornerSize = isMobile ? 0.3 : 0.6;
 
   return (
     <group ref={viewfinderRef} position={[0, 0, -1]}>
