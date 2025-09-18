@@ -12,18 +12,26 @@ export const CameraHero = () => {
   const { viewport } = useThree()
   const [time, setTime] = useState(0)
   const [useMouse, setUseMouse] = useState(false);
+  const [isMobileDevice, setIsMobileDevice] = useState(false)
 
   useEffect(() => {
-    const handleMouseMove = () => {
-      setUseMouse(true);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    // Check if mobile device
+    const checkMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    setIsMobileDevice(checkMobile);
 
-    window.addEventListener('mousemove', handleMouseMove);
+    // Only set up mouse detection for desktop
+    if (!checkMobile) {
+      const handleMouseMove = () => {
+        setUseMouse(true);
+        window.removeEventListener('mousemove', handleMouseMove);
+      };
 
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+      window.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+      };
+    }
   }, []);
 
   // Setup device orientation for mobile
@@ -60,19 +68,20 @@ export const CameraHero = () => {
         }
       }
 
-      // Add click handler to request permission on iOS
-      const handleClick = () => {
+      // Add touchend handler to request permission on iOS (not click to avoid mouse event confusion)
+      const handleTouch = (e: TouchEvent) => {
         if (!hasPermission) {
+          e.preventDefault();
           requestPermission()
         }
       }
 
-      window.addEventListener('click', handleClick)
+      window.addEventListener('touchend', handleTouch)
       requestPermission() // Try to request immediately
 
       return () => {
         window.removeEventListener('deviceorientation', handleOrientation)
-        window.removeEventListener('click', handleClick)
+        window.removeEventListener('touchend', handleTouch)
       }
     } else {
       // Android and other devices don't need permission
@@ -89,18 +98,20 @@ export const CameraHero = () => {
   useFrame((state, delta) => {
     let x, y
 
-    if (useMouse) {
-      // Use mouse for desktop
+    if (isMobileDevice) {
+      // On mobile, always use gyroscope (or stay still if no permission)
+      if (hasPermission) {
+        x = orientationRef.current.gamma
+        y = orientationRef.current.beta
+      } else {
+        // Don't use mouse fallback on mobile - keep viewfinder centered
+        x = 0;
+        y = 0;
+      }
+    } else {
+      // On desktop, use mouse
       x = state.mouse.x
       y = state.mouse.y
-    } else if (hasPermission) {
-      // Use gyroscope data for mobile
-      x = orientationRef.current.gamma
-      y = orientationRef.current.beta
-    } else {
-      // Fallback to mouse if no permissions
-      x = state.mouse.x;
-      y = state.mouse.y;
     }
 
     // Smooth tracking
