@@ -52,7 +52,7 @@ export default function ComingSoonPage() {
           </div>
 
           {/* Social Media Links */}
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4 max-w-2xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
             {/* Instagram */}
             <a
               href="https://www.instagram.com/jsquarephotographysg"
@@ -121,20 +121,6 @@ export default function ComingSoonPage() {
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
               <span className="text-xs">Carousell</span>
-            </a>
-
-            {/* Website */}
-            <a
-              href="https://jsquarephotography.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg transition-colors"
-              aria-label="Website"
-            >
-              <svg className="w-6 h-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-              <span className="text-xs">Website</span>
             </a>
           </div>
 
