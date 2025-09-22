@@ -63,28 +63,28 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
       name: 'John Square',
       role: 'Lead Photographer & Creative Director',
       bio: 'With 10+ years of experience in visual storytelling',
-      imageUrl: '/team/john.jpg'
+      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop'
     },
     {
       id: '2',
       name: 'Sarah Chen',
       role: 'Videographer & Editor',
       bio: 'Specializing in cinematic wedding films and documentaries',
-      imageUrl: '/team/sarah.jpg'
+      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=800&fit=crop'
     },
     {
       id: '3',
       name: 'Mike Rodriguez',
       role: 'Drone Operator & Photographer',
       bio: 'Capturing unique perspectives from above',
-      imageUrl: '/team/mike.jpg'
+      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&h=800&fit=crop'
     },
     {
       id: '4',
       name: 'Emily Watson',
       role: 'Post-Production Specialist',
       bio: 'Bringing stories to life through expert editing',
-      imageUrl: '/team/emily.jpg'
+      imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop'
     }
   ]
 

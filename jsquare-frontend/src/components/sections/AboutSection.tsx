@@ -73,7 +73,7 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
     From intimate weddings to corporate events, we bring a unique perspective
     and artistic vision to every shoot. Our commitment to excellence and
     attention to detail ensures that every photograph tells a story worth remembering.`,
-    imageUrl: '/placeholder-about.jpg'
+    imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&h=1000&fit=crop'
   }
 
   const displayContent = content || defaultContent
@@ -82,7 +82,7 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-32 px-6 overflow-hidden"
+      className="relative py-32 px-6 overflow-hidden bg-white dark:bg-black"
     >
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

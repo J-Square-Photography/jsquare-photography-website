@@ -5,9 +5,101 @@ import { getGalleries } from '@/lib/wordpress/api'
 export const RecentGalleries = async () => {
   const { galleries } = await getGalleries(6)
 
-  if (!galleries || galleries.length === 0) {
-    return null
-  }
+  // Fallback placeholder galleries if no WordPress content
+  const placeholderGalleries = [
+    {
+      id: '1',
+      title: 'Elegant Wedding at Sentosa',
+      slug: 'elegant-wedding-sentosa',
+      excerpt: 'A beautiful beachfront wedding',
+      content: '',
+      date: '2024-01-15',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=1000&fit=crop',
+          altText: 'Wedding photography'
+        }
+      },
+      categories: { nodes: [{ name: 'Weddings', slug: 'weddings' }] }
+    },
+    {
+      id: '2',
+      title: 'Corporate Event - Tech Summit',
+      slug: 'corporate-tech-summit',
+      excerpt: 'Annual technology conference',
+      content: '',
+      date: '2024-01-10',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=1000&fit=crop',
+          altText: 'Corporate event'
+        }
+      },
+      categories: { nodes: [{ name: 'Corporate', slug: 'corporate' }] }
+    },
+    {
+      id: '3',
+      title: 'Portrait Session - Urban Style',
+      slug: 'portrait-urban-style',
+      excerpt: 'Modern portrait photography',
+      content: '',
+      date: '2024-01-08',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=1000&fit=crop',
+          altText: 'Portrait photography'
+        }
+      },
+      categories: { nodes: [{ name: 'Portraits', slug: 'portraits' }] }
+    },
+    {
+      id: '4',
+      title: 'Garden Wedding Celebration',
+      slug: 'garden-wedding-celebration',
+      excerpt: 'Romantic garden venue',
+      content: '',
+      date: '2024-01-05',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&h=1000&fit=crop',
+          altText: 'Garden wedding'
+        }
+      },
+      categories: { nodes: [{ name: 'Weddings', slug: 'weddings' }] }
+    },
+    {
+      id: '5',
+      title: 'Product Launch Event',
+      slug: 'product-launch-event',
+      excerpt: 'Exciting product reveal',
+      content: '',
+      date: '2024-01-03',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&h=1000&fit=crop',
+          altText: 'Product launch'
+        }
+      },
+      categories: { nodes: [{ name: 'Events', slug: 'events' }] }
+    },
+    {
+      id: '6',
+      title: 'Family Portrait Session',
+      slug: 'family-portrait-session',
+      excerpt: 'Capturing family moments',
+      content: '',
+      date: '2024-01-01',
+      featuredImage: {
+        node: {
+          sourceUrl: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&h=1000&fit=crop',
+          altText: 'Family portrait'
+        }
+      },
+      categories: { nodes: [{ name: 'Family', slug: 'family' }] }
+    }
+  ]
+
+  const displayGalleries = galleries && galleries.length > 0 ? galleries : placeholderGalleries
 
   return (
     <section className="py-20 px-6 bg-gray-50 dark:bg-gray-950">
@@ -22,7 +114,7 @@ export const RecentGalleries = async () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {galleries.map((gallery) => (
+          {displayGalleries.map((gallery) => (
             <Link
               key={gallery.id}
               href={`/portfolio/${gallery.slug}`}

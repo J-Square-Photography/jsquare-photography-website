@@ -30,8 +30,10 @@ export const Navigation = () => {
 
   const navItems = [
     { href: '#portfolio', label: 'Portfolio' },
+    { href: '#services', label: 'Services' },
     { href: '#about', label: 'About' },
-    { href: '#stories', label: 'Stories' },
+    { href: '#team', label: 'Team' },
+    { href: '#testimonials', label: 'Testimonials' },
     { href: '#contact', label: 'Contact' },
   ]
 
@@ -64,53 +66,19 @@ export const Navigation = () => {
             : 'py-5 md:py-6'
         }`}
       >
-        {/* Progressive glass effect - transparent to frosted */}
+        {/* Subtle glass effect - very minimal */}
         <div className={`absolute inset-0 overflow-hidden transition-all duration-700 ${
           isScrolled ? 'opacity-100' : 'opacity-0'
         }`}>
-          {/* Base blur layer */}
-          <div className={`absolute inset-0 ${
-            theme === 'dark'
-              ? 'bg-black/70'
-              : 'bg-white/70'
-          } backdrop-blur-2xl backdrop-saturate-150`} />
+          {/* 50% opacity blur layer */}
+          <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-lg" />
 
-          {/* Secondary blur for extra frosting */}
-          <div className={`absolute inset-0 ${
-            theme === 'dark'
-              ? 'bg-gray-900/20'
-              : 'bg-gray-100/30'
-          } backdrop-blur-sm`} />
+          {/* Very minimal gradient for subtle depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-black/10 to-transparent" />
 
-          {/* Gradient overlay for depth */}
-          <div className={`absolute inset-0 bg-gradient-to-b ${
-            theme === 'dark'
-              ? 'from-black/10 to-transparent'
-              : 'from-white/30 to-transparent'
-          }`} />
-
-          {/* Noise texture for material feel */}
-          <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay">
-            <svg width="100%" height="100%">
-              <filter id="noiseFilter">
-                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" />
-              </filter>
-              <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-            </svg>
-          </div>
-
-          {/* Bottom border with glow */}
-          <div className={`absolute bottom-0 left-0 right-0 h-px ${
-            theme === 'dark'
-              ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent'
-              : 'bg-gradient-to-r from-transparent via-black/10 to-transparent'
-          }`} />
+          {/* Subtle bottom border */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent" />
         </div>
-
-        {/* Subtle shadow for text readability when transparent - only in dark mode */}
-        {!isScrolled && theme === 'dark' && (
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent pointer-events-none" />
-        )}
 
         <nav className="relative container mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
@@ -124,9 +92,7 @@ export const Navigation = () => {
                 priority
                 className={`transition-all duration-300 ${
                   isScrolled ? 'h-10' : 'h-12'
-                } w-auto ${
-                  !isScrolled && theme === 'dark' ? 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]' : ''
-                }`}
+                } w-auto`}
               />
             )}
           </Link>
@@ -141,9 +107,7 @@ export const Navigation = () => {
                 className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
                   isScrolled
                     ? 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    : theme === 'dark'
-                      ? 'text-white hover:text-white/80 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
-                      : 'text-gray-900 hover:text-gray-700'
+                    : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
                 }`}
               >
                 {item.label}
@@ -166,9 +130,7 @@ export const Navigation = () => {
               className={`block w-6 h-px mb-1.5 ${
                 isScrolled
                   ? 'bg-gray-900 dark:bg-white'
-                  : theme === 'dark'
-                    ? 'bg-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
-                    : 'bg-gray-900'
+                  : 'bg-gray-900 dark:bg-white dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
               }`}
             />
             <motion.span
@@ -179,9 +141,7 @@ export const Navigation = () => {
               className={`block w-6 h-px mb-1.5 ${
                 isScrolled
                   ? 'bg-gray-900 dark:bg-white'
-                  : theme === 'dark'
-                    ? 'bg-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
-                    : 'bg-gray-900'
+                  : 'bg-gray-900 dark:bg-white dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
               }`}
             />
             <motion.span
@@ -193,9 +153,7 @@ export const Navigation = () => {
               className={`block w-6 h-px ${
                 isScrolled
                   ? 'bg-gray-900 dark:bg-white'
-                  : theme === 'dark'
-                    ? 'bg-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
-                    : 'bg-gray-900'
+                  : 'bg-gray-900 dark:bg-white dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]'
               }`}
             />
           </button>

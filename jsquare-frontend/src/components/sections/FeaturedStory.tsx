@@ -4,11 +4,23 @@ import { getLatestStories } from '@/lib/wordpress/api'
 
 export const FeaturedStory = async () => {
   const stories = await getLatestStories(1)
-  const featuredStory = stories[0]
 
-  if (!featuredStory) {
-    return null
+  // Fallback placeholder story
+  const placeholderStory = {
+    id: '1',
+    title: 'Behind the Lens: Capturing Authentic Moments',
+    slug: 'behind-the-lens-authentic-moments',
+    content: '<p>In the world of professional photography, authenticity has become the golden standard. Gone are the days of overly posed, stiff portraits that fail to capture the essence of the moment. Today\'s clients seek genuine emotions, spontaneous laughter, and the unscripted beauty of real life. As photographers, we\'ve evolved our approach to embrace this shift, focusing on creating an environment where our subjects feel comfortable enough to be themselves. This journey toward authentic photography has transformed not just our work, but our entire philosophy about what it means to capture memories.</p>',
+    date: '2024-01-20',
+    featuredImage: {
+      node: {
+        sourceUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1200&h=800&fit=crop',
+        altText: 'Camera and photography equipment'
+      }
+    }
   }
+
+  const featuredStory = stories[0] || placeholderStory
 
   // Strip HTML tags from content for excerpt
   const excerpt = featuredStory.content
