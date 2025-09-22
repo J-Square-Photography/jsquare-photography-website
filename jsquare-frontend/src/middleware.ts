@@ -21,9 +21,30 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/coming-soon', request.url))
   }
 
-  // In live mode, prevent access to /coming-soon
-  if (siteMode === 'live' && pathname.startsWith('/coming-soon')) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // In under-construction mode, redirect everything to /under-construction
+  if (siteMode === 'under-construction') {
+    // Allow access to under-construction page, API routes, and static assets
+    if (
+      pathname.startsWith('/under-construction') ||
+      pathname.startsWith('/api') ||
+      pathname.startsWith('/_next') ||
+      pathname.includes('.') // Allow static files
+    ) {
+      return NextResponse.next()
+    }
+
+    // Redirect all other routes to under-construction
+    return NextResponse.redirect(new URL('/under-construction', request.url))
+  }
+
+  // In live mode, prevent access to /coming-soon and /under-construction
+  if (siteMode === 'live') {
+    if (pathname.startsWith('/coming-soon')) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+    if (pathname.startsWith('/under-construction')) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
   }
 
   return NextResponse.next()
