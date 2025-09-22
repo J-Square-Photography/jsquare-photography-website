@@ -141,13 +141,18 @@ export const Hero = () => {
 
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden bg-white dark:bg-black transition-colors duration-200">
+      {/* Ambient gradient background */}
+      <div className="absolute inset-0 opacity-50">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full filter blur-[128px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full filter blur-[128px]" />
+      </div>
       {/* WebGL Scene Background */}
       <div className="absolute inset-0" style={{ zIndex: 0 }}>
         <Scene className="w-full h-full" />
       </div>
 
-      {/* Content Overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none" style={{ zIndex: 10 }}>
+      {/* Content Overlay - Adjusted for better composition */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center pointer-events-none pt-20" style={{ zIndex: 10 }}>
         {/* Logo - switches based on theme */}
         <div ref={logoRef} className="mb-8">
           {mounted && (
@@ -162,30 +167,64 @@ export const Hero = () => {
           )}
         </div>
 
-        {/* Main Title */}
+        {/* Main Title - Enhanced */}
         <div ref={titleRef} className="mb-6">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extralight text-gray-900 dark:text-white tracking-wider leading-none">
-            CAPTURING
-            <br />
-            <span className="font-light">MOMENTS</span>
+          <h1 className="relative">
+            <span className="block text-6xl md:text-8xl lg:text-9xl font-extralight text-gray-900 dark:text-white tracking-wider leading-none mb-2">
+              CAPTURING
+            </span>
+            <span className="block text-5xl md:text-7xl lg:text-8xl font-light text-gray-900 dark:text-white tracking-wide">
+              MOMENTS
+            </span>
+            {/* Decorative line */}
+            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gray-900 dark:via-white to-transparent opacity-40" />
           </h1>
         </div>
 
-        {/* Subtitle */}
-        <div ref={subtitleRef} className="max-w-2xl mx-auto">
+        {/* Subtitle - Enhanced */}
+        <div ref={subtitleRef} className="max-w-2xl mx-auto mt-8">
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light leading-relaxed tracking-wide">
             Professional photography & videography services
-            <br />
-            <span className="text-base text-gray-600 dark:text-gray-400">Since 2017</span>
           </p>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-gray-500 dark:bg-gray-400 rounded-full mt-2 animate-pulse"></div>
+          <div className="flex items-center justify-center gap-6 mt-4">
+            <span className="text-sm text-gray-600 dark:text-gray-400 font-light">Since 2017</span>
+            <span className="text-gray-400 dark:text-gray-600">•</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 font-light">Singapore</span>
           </div>
         </div>
+
+        {/* Enhanced Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-xs font-light text-gray-500 dark:text-gray-400 tracking-widest uppercase">Scroll</span>
+            <div className="w-6 h-10 border border-gray-400 dark:border-gray-600 rounded-full flex justify-center relative overflow-hidden">
+              <div className="absolute w-1 h-3 bg-gray-500 dark:bg-gray-400 rounded-full animate-scroll-indicator"></div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes scroll-indicator {
+            0% {
+              transform: translateY(0);
+              opacity: 0;
+            }
+            20% {
+              opacity: 1;
+            }
+            80% {
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(16px);
+              opacity: 0;
+            }
+          }
+          .animate-scroll-indicator {
+            animation: scroll-indicator 2s ease-in-out infinite;
+            top: 8px;
+          }
+        `}</style>
       </div>
 
       {/* Subtle gradient overlay for depth */}
