@@ -7,12 +7,11 @@ export function middleware(request: NextRequest) {
 
   // In coming-soon mode, redirect everything to /coming-soon
   if (siteMode === 'coming-soon') {
-    // Allow access to coming-soon page, API routes, static assets, and CMS routes
+    // Allow access to coming-soon page, API routes, and static assets
     if (
       pathname.startsWith('/coming-soon') ||
       pathname.startsWith('/api') ||
       pathname.startsWith('/_next') ||
-      pathname.startsWith('/cms') ||
       pathname.includes('.') // Allow static files
     ) {
       return NextResponse.next()
@@ -24,12 +23,11 @@ export function middleware(request: NextRequest) {
 
   // In under-construction mode, redirect everything to /under-construction
   if (siteMode === 'under-construction') {
-    // Allow access to under-construction page, API routes, static assets, and CMS routes
+    // Allow access to under-construction page, API routes, and static assets
     if (
       pathname.startsWith('/under-construction') ||
       pathname.startsWith('/api') ||
       pathname.startsWith('/_next') ||
-      pathname.startsWith('/cms') ||
       pathname.includes('.') // Allow static files
     ) {
       return NextResponse.next()
@@ -60,8 +58,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - cms (WordPress backend routes)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|cms).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
