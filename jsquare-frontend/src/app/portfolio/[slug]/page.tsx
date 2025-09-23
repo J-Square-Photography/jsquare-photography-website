@@ -131,7 +131,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
 
               <div className="group">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">
-                  {gallery.galleryImages?.quality || 'Unknown'}
+                  {gallery.portfoliodetails?.quality || 'Unknown'}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Quality
