@@ -54,9 +54,10 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
     if (!section || !cards) return
 
     // Small delay to ensure DOM is ready
+    let ctx: any
     const timer = setTimeout(() => {
       // Create GSAP context for proper cleanup
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
         // Animate cards on scroll
         if (cards.children.length > 0) {
           const teamCards = gsap.utils.toArray(cards.children)
@@ -80,15 +81,11 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
           })
         }
       }, section)
-
-      return () => {
-        ctx.revert()
-      }
     }, 100) // Small delay for DOM
 
     return () => {
       clearTimeout(timer)
-      if (typeof ctx !== 'undefined') {
+      if (ctx) {
         ctx.revert()
       }
     }

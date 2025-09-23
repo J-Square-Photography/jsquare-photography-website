@@ -48,9 +48,10 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
     if (!section || !text || !image) return
 
     // Small delay to ensure DOM is ready
+    let ctx: any
     const timer = setTimeout(() => {
       // Create GSAP context for proper cleanup
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
         // Animate text elements
         const textElements = gsap.utils.toArray(text.children)
 
@@ -90,15 +91,11 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
           }
         )
       }, section)
-
-      return () => {
-        ctx.revert()
-      }
     }, 100) // Small delay for DOM
 
     return () => {
       clearTimeout(timer)
-      if (typeof ctx !== 'undefined') {
+      if (ctx) {
         ctx.revert()
       }
     }

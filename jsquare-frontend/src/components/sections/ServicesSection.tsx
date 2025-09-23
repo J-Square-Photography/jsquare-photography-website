@@ -50,9 +50,10 @@ export const ServicesSection = () => {
     if (!section) return
 
     // Small delay to ensure DOM is ready
+    let ctx: any
     const timer = setTimeout(() => {
       // Create GSAP context for proper cleanup
-      const ctx = gsap.context(() => {
+      ctx = gsap.context(() => {
         // Animate main service cards
         if (mainCards && mainCards.children.length > 0) {
           const cards = gsap.utils.toArray(mainCards.children)
@@ -99,15 +100,11 @@ export const ServicesSection = () => {
           })
         }
       }, section)
-
-      return () => {
-        ctx.revert()
-      }
     }, 100) // Small delay for DOM
 
     return () => {
       clearTimeout(timer)
-      if (typeof ctx !== 'undefined') {
+      if (ctx) {
         ctx.revert()
       }
     }
