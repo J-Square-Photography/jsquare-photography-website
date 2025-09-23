@@ -105,7 +105,7 @@ const GET_GALLERY_BY_SLUG = `
           slug
         }
       }
-      galleryImages {
+      portfoliodetails {
         quality
         location
       }
