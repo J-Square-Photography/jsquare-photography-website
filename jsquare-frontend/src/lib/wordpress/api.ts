@@ -103,6 +103,10 @@ const GET_GALLERY_BY_SLUG = `
           slug
         }
       }
+      galleryImages {
+        quality
+        location
+      }
     }
   }
 `
