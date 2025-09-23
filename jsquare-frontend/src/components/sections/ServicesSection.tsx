@@ -1,11 +1,17 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect, useRef, useLayoutEffect } from 'react'
 import Image from 'next/image'
 
-gsap.registerPlugin(ScrollTrigger)
+// Dynamic import for GSAP to avoid SSR issues
+let gsap: any
+let ScrollTrigger: any
+
+if (typeof window !== 'undefined') {
+  gsap = require('gsap').gsap
+  ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface Service {
   id: string
@@ -22,51 +28,88 @@ export const ServicesSection = () => {
   const mainCardsRef = useRef<HTMLDivElement>(null)
   const additionalCardsRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
+    // Re-initialize GSAP if needed
+    const initGSAP = () => {
+      if (!gsap) {
+        gsap = require('gsap').gsap
+        ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger)
+      }
+    }
+
+    initGSAP()
+
     const section = sectionRef.current
     const mainCards = mainCardsRef.current
     const additionalCards = additionalCardsRef.current
 
-    if (!section || !mainCards || !additionalCards) return
+    if (!section) return
 
-    // Animate main service cards
-    gsap.fromTo(
-      mainCards.children,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        scrollTrigger: {
-          trigger: mainCards,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    )
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      // Create GSAP context for proper cleanup
+      const ctx = gsap.context(() => {
+        // Animate main service cards
+        if (mainCards && mainCards.children.length > 0) {
+          const cards = gsap.utils.toArray(mainCards.children)
 
-    // Animate additional service cards
-    gsap.fromTo(
-      additionalCards.children,
-      { opacity: 0, scale: 0.9 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 0.6,
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: additionalCards,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
+          // Set initial visibility to ensure content is visible
+          gsap.set(cards, { autoAlpha: 1 })
+
+          // Animate from hidden to visible
+          gsap.from(cards, {
+            autoAlpha: 0,
+            y: 50,
+            duration: 1,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: mainCards,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          })
+        }
+
+        // Animate additional service cards
+        if (additionalCards && additionalCards.children.length > 0) {
+          const cards = gsap.utils.toArray(additionalCards.children)
+
+          // Set initial visibility
+          gsap.set(cards, { autoAlpha: 1 })
+
+          // Animate from hidden
+          gsap.from(cards, {
+            autoAlpha: 0,
+            scale: 0.9,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: additionalCards,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          })
+        }
+      }, section)
+
+      return () => {
+        ctx.revert()
       }
-    )
+    }, 100) // Small delay for DOM
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      clearTimeout(timer)
+      if (typeof ctx !== 'undefined') {
+        ctx.revert()
+      }
     }
   }, [])
 

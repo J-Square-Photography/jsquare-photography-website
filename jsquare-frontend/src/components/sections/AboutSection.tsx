@@ -1,11 +1,17 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect, useRef, useLayoutEffect } from 'react'
 import Image from 'next/image'
 
-gsap.registerPlugin(ScrollTrigger)
+// Dynamic import for GSAP to avoid SSR issues
+let gsap: any
+let ScrollTrigger: any
+
+if (typeof window !== 'undefined') {
+  gsap = require('gsap').gsap
+  ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface AboutSectionProps {
   content?: {
@@ -20,48 +26,81 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
   const textRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
+    // Re-initialize GSAP if needed
+    const initGSAP = () => {
+      if (!gsap) {
+        gsap = require('gsap').gsap
+        ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger)
+      }
+    }
+
+    initGSAP()
+
     const section = sectionRef.current
     const text = textRef.current
     const image = imageRef.current
 
     if (!section || !text || !image) return
 
-    // Parallax effect for image
-    gsap.fromTo(
-      image,
-      { y: -50 },
-      {
-        y: 50,
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      }
-    )
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      // Create GSAP context for proper cleanup
+      const ctx = gsap.context(() => {
+        // Animate text elements
+        const textElements = gsap.utils.toArray(text.children)
 
-    // Fade in animation for text
-    gsap.fromTo(
-      text.children,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        stagger: 0.2,
-        scrollTrigger: {
-          trigger: text,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
+        // Set initial visibility to ensure content is visible
+        gsap.set(textElements, { autoAlpha: 1 })
+
+        // Animate from hidden to visible
+        gsap.from(textElements, {
+          autoAlpha: 0,
+          y: 40,
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: text,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
+        })
+
+        // Parallax effect for image
+        gsap.fromTo(image,
+          {
+            y: 50,
+          },
+          {
+            y: -50,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.5,
+            },
+          }
+        )
+      }, section)
+
+      return () => {
+        ctx.revert()
       }
-    )
+    }, 100) // Small delay for DOM
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      clearTimeout(timer)
+      if (typeof ctx !== 'undefined') {
+        ctx.revert()
+      }
     }
   }, [])
 

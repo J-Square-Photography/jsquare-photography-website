@@ -1,11 +1,17 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useEffect, useRef, useLayoutEffect } from 'react'
 import Image from 'next/image'
 
-gsap.registerPlugin(ScrollTrigger)
+// Dynamic import for GSAP to avoid SSR issues
+let gsap: any
+let ScrollTrigger: any
+
+if (typeof window !== 'undefined') {
+  gsap = require('gsap').gsap
+  ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface TeamMember {
   id: string
@@ -27,32 +33,64 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
+    // Re-initialize GSAP if needed
+    const initGSAP = () => {
+      if (!gsap) {
+        gsap = require('gsap').gsap
+        ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger)
+      }
+    }
+
+    initGSAP()
+
     const section = sectionRef.current
     const cards = cardsRef.current
 
     if (!section || !cards) return
 
-    // Animate cards on scroll
-    gsap.fromTo(
-      cards.children,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: cards,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      // Create GSAP context for proper cleanup
+      const ctx = gsap.context(() => {
+        // Animate cards on scroll
+        if (cards.children.length > 0) {
+          const teamCards = gsap.utils.toArray(cards.children)
+
+          // Ensure cards are visible
+          gsap.set(teamCards, { autoAlpha: 1 })
+
+          // Animate from hidden
+          gsap.from(teamCards, {
+            autoAlpha: 0,
+            y: 40,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cards,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          })
+        }
+      }, section)
+
+      return () => {
+        ctx.revert()
       }
-    )
+    }, 100) // Small delay for DOM
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      clearTimeout(timer)
+      if (typeof ctx !== 'undefined') {
+        ctx.revert()
+      }
     }
   }, [members])
 
