@@ -34,8 +34,10 @@ export interface GalleryPost {
     }>
   }
   date: string
-  quality?: string
-  location?: string
+  portfoliodetails?: {
+    quality?: string
+    location?: string
+  }
 }
 
 export interface StoryPost {
