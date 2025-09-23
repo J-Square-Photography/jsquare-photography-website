@@ -34,6 +34,8 @@ export interface GalleryPost {
     }>
   }
   date: string
+  quality?: string
+  location?: string
 }
 
 export interface StoryPost {
@@ -72,13 +74,6 @@ const GET_GALLERIES = `
             slug
           }
         }
-        galleryImages: acfGallery {
-          images {
-            sourceUrl
-            altText
-            caption
-          }
-        }
       }
       pageInfo {
         hasNextPage
@@ -106,13 +101,6 @@ const GET_GALLERY_BY_SLUG = `
         nodes {
           name
           slug
-        }
-      }
-      galleryImages: acfGallery {
-        images {
-          sourceUrl
-          altText
-          caption
         }
       }
     }

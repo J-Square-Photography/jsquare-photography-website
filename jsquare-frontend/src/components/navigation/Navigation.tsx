@@ -28,25 +28,29 @@ export const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const isHomePage = pathname === '/'
+
   const navItems = [
-    { href: '#portfolio', label: 'Portfolio' },
-    { href: '#services', label: 'Services' },
-    { href: '#about', label: 'About' },
-    { href: '#team', label: 'Team' },
-    { href: '#testimonials', label: 'Testimonials' },
-    { href: '#contact', label: 'Contact' },
+    { href: isHomePage ? '#portfolio' : '/portfolio', label: 'Portfolio', isHash: isHomePage },
+    { href: isHomePage ? '#services' : '/#services', label: 'Services', isHash: isHomePage },
+    { href: isHomePage ? '#about' : '/#about', label: 'About', isHash: isHomePage },
+    { href: isHomePage ? '#team' : '/#team', label: 'Team', isHash: isHomePage },
+    { href: isHomePage ? '#testimonials' : '/#testimonials', label: 'Testimonials', isHash: isHomePage },
+    { href: isHomePage ? '#contact' : '/#contact', label: 'Contact', isHash: isHomePage },
   ]
 
-  const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const element = document.querySelector(href)
-    if (element) {
-      const offset = 80 // Navigation height
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY
-      window.scrollTo({
-        top: elementPosition - offset,
-        behavior: 'smooth'
-      })
+  const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string, isHash: boolean) => {
+    if (isHash) {
+      e.preventDefault()
+      const element = document.querySelector(href)
+      if (element) {
+        const offset = 80 // Navigation height
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY
+        window.scrollTo({
+          top: elementPosition - offset,
+          behavior: 'smooth'
+        })
+      }
     }
     setIsMobileMenuOpen(false)
   }
@@ -66,18 +70,18 @@ export const Navigation = () => {
             : 'py-5 md:py-6'
         }`}
       >
-        {/* Subtle glass effect - very minimal */}
+        {/* Background for non-homepage or scrolled state */}
         <div className={`absolute inset-0 overflow-hidden transition-all duration-700 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
+          (isScrolled || !isHomePage) ? 'opacity-100' : 'opacity-0'
         }`}>
-          {/* 50% opacity blur layer */}
-          <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-lg" />
+          {/* Solid background for portfolio pages */}
+          <div className="absolute inset-0 bg-white/95 dark:bg-black/95 backdrop-blur-lg" />
 
           {/* Very minimal gradient for subtle depth */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-black/10 to-transparent" />
 
           {/* Subtle bottom border */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent" />
         </div>
 
         <nav className="relative container mx-auto px-6 flex items-center justify-between">
@@ -100,18 +104,32 @@ export const Navigation = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleScrollToSection(e, item.href)}
-                className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
-                  isScrolled
-                    ? 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
-                }`}
-              >
-                {item.label}
-              </a>
+              item.isHash ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleScrollToSection(e, item.href, item.isHash)}
+                  className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
+                    (isScrolled || !isHomePage)
+                      ? 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
+                    (isScrolled || !isHomePage)
+                      ? 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </div>
 
@@ -186,7 +204,7 @@ export const Navigation = () => {
                 >
                   <a
                     href={item.href}
-                    onClick={(e) => handleScrollToSection(e, item.href)}
+                    onClick={(e) => handleScrollToSection(e, item.href, item.isHash)}
                     className="text-2xl font-light tracking-wider transition-colors duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer"
                   >
                     {item.label}
