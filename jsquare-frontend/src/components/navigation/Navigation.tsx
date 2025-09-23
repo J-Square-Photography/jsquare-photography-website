@@ -70,18 +70,18 @@ export const Navigation = () => {
             : 'py-5 md:py-6'
         }`}
       >
-        {/* Background for non-homepage or scrolled state */}
+        {/* Subtle glass effect - very minimal */}
         <div className={`absolute inset-0 overflow-hidden transition-all duration-700 ${
-          (isScrolled || !isHomePage) ? 'opacity-100' : 'opacity-0'
+          isScrolled ? 'opacity-100' : 'opacity-0'
         }`}>
-          {/* Solid background for portfolio pages */}
-          <div className="absolute inset-0 bg-white/95 dark:bg-black/95 backdrop-blur-lg" />
+          {/* 50% opacity blur layer */}
+          <div className="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-lg" />
 
           {/* Very minimal gradient for subtle depth */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 dark:from-black/10 to-transparent" />
 
           {/* Subtle bottom border */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent" />
         </div>
 
         <nav className="relative container mx-auto px-6 flex items-center justify-between">
@@ -110,8 +110,8 @@ export const Navigation = () => {
                   href={item.href}
                   onClick={(e) => handleScrollToSection(e, item.href, item.isHash)}
                   className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
-                    (isScrolled || !isHomePage)
-                      ? 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    isScrolled
+                      ? 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
                   }`}
                 >
@@ -122,8 +122,8 @@ export const Navigation = () => {
                   key={item.href}
                   href={item.href}
                   className={`relative text-sm font-light tracking-wider transition-all duration-300 cursor-pointer ${
-                    (isScrolled || !isHomePage)
-                      ? 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    isScrolled
+                      ? 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       : 'text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-white/80'
                   }`}
                 >
