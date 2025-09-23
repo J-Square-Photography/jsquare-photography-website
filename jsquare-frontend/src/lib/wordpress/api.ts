@@ -6,6 +6,7 @@ const graphqlClient = new GraphQLClient(endpoint, {
   headers: {
     'Content-Type': 'application/json',
   },
+  cache: 'no-store', // Disable caching
 })
 
 export interface GalleryPost {
