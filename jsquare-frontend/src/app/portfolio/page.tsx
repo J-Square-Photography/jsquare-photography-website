@@ -118,8 +118,9 @@ export default function PortfolioPage() {
           nodes: [{ name: 'Sample', slug: 'sample' }]
         },
         portfoliodetails: {
-          skillLevel: ['beginner', 'novice', 'enthusiast', 'professional', 'director', 'beginner'][i - 1] as SkillLevel,
-          eventType: ['weddings', 'events', 'photobooth', 'corporate', 'others', 'weddings'][i - 1] as EventType
+          skilllevel: [['beginner', 'novice', 'enthusiast', 'professional', 'director', 'beginner'][i - 1]],
+          eventtype: [['weddings', 'events', 'photobooth', 'corporate', 'others', 'weddings'][i - 1]],
+          location: 'Singapore'
         }
       }))
     }
