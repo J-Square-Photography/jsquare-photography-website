@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
+import { SkillLevel, EventType } from './types'
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'https://www.jsquarephotography.com/graphql'
 
@@ -38,6 +39,8 @@ export interface GalleryPost {
   portfoliodetails?: {
     quality?: string
     location?: string
+    skillLevel?: SkillLevel
+    eventType?: EventType
   }
 }
 
@@ -77,6 +80,12 @@ const GET_GALLERIES = `
             slug
           }
         }
+        portfoliodetails {
+          quality
+          location
+          skillLevel
+          eventType
+        }
       }
       pageInfo {
         hasNextPage
@@ -109,6 +118,8 @@ const GET_GALLERY_BY_SLUG = `
       portfoliodetails {
         quality
         location
+        skillLevel
+        eventType
       }
     }
   }
@@ -191,6 +202,12 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
               slug
             }
           }
+          portfoliodetails {
+            quality
+            location
+            skillLevel
+            eventType
+          }
           galleryImages: acfGallery {
             images {
               sourceUrl
@@ -202,12 +219,39 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
       }
     }
   `
-  
+
   try {
     const data: any = await graphqlClient.request(GET_GALLERIES_BY_CATEGORY, { categorySlug, first })
     return data.posts.nodes
   } catch (error) {
     console.error('Error fetching galleries by category:', error)
+    return []
+  }
+}
+
+export const getFilteredGalleries = async (
+  skillLevel?: SkillLevel,
+  eventType?: EventType,
+  first = 20
+): Promise<GalleryPost[]> => {
+  try {
+    const { galleries } = await getGalleries(first)
+
+    return galleries.filter(gallery => {
+      const matchesSkillLevel =
+        !skillLevel ||
+        skillLevel === 'all' ||
+        gallery.portfoliodetails?.skillLevel === skillLevel
+
+      const matchesEventType =
+        !eventType ||
+        eventType === 'all' ||
+        gallery.portfoliodetails?.eventType === eventType
+
+      return matchesSkillLevel && matchesEventType
+    })
+  } catch (error) {
+    console.error('Error fetching filtered galleries:', error)
     return []
   }
 }

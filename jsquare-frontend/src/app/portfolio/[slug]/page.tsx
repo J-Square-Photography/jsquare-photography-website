@@ -122,7 +122,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
         {/* Gallery Info Section with Stats */}
         <section className="py-16 px-6 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
           <div className="container mx-auto max-w-6xl">
-            <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 text-center">
               {/* Stats */}
               <div className="group">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">
@@ -132,6 +132,28 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                   Photos
                 </div>
               </div>
+
+              {gallery.portfoliodetails?.skillLevel && (
+                <div className="group">
+                  <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
+                    {gallery.portfoliodetails.skillLevel}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Skill Level
+                  </div>
+                </div>
+              )}
+
+              {gallery.portfoliodetails?.eventType && (
+                <div className="group">
+                  <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
+                    {gallery.portfoliodetails.eventType}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                    Event Type
+                  </div>
+                </div>
+              )}
 
               <div className="group">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">

@@ -211,11 +211,11 @@ export const ServicesSection = () => {
           <h3 className="text-2xl font-light text-gray-900 dark:text-white mb-12 text-center">
             Core Specialties
           </h3>
-          <div ref={mainCardsRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div ref={mainCardsRef} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             {mainServices.map((service) => (
               <div
                 key={service.id}
-                className="group relative bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-500"
+                className="group relative bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full"
               >
                 {/* Image */}
                 <div className="relative aspect-[4/3] overflow-hidden">
@@ -230,7 +230,7 @@ export const ServicesSection = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-8">
+                <div className="p-8 flex flex-col flex-grow">
                   <h4 className="text-2xl font-light text-gray-900 dark:text-white mb-3">
                     {service.title}
                   </h4>
@@ -239,7 +239,7 @@ export const ServicesSection = () => {
                   </p>
 
                   {/* Features */}
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-2 mb-6 flex-grow">
                     {service.features.map((feature, index) => (
                       <li key={index} className="flex items-start">
                         <svg
@@ -264,7 +264,7 @@ export const ServicesSection = () => {
 
                   {/* Price */}
                   {service.price && (
-                    <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-800 mt-auto">
                       <span className="text-2xl font-light text-gray-900 dark:text-white">
                         {service.price}
                       </span>
