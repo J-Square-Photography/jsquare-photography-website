@@ -41,7 +41,6 @@ export interface GalleryPost {
   }
   date: string
   portfoliodetails?: {
-    quality?: string
     location?: string
     skilllevel?: string[]
     eventtype?: string[]
@@ -85,7 +84,6 @@ const GET_GALLERIES = `
           }
         }
         portfoliodetails {
-          quality
           location
           skilllevel
           eventtype
@@ -120,7 +118,6 @@ const GET_GALLERY_BY_SLUG = `
         }
       }
       portfoliodetails {
-        quality
         location
         skilllevel
         eventtype
@@ -207,7 +204,6 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
             }
           }
           portfoliodetails {
-            quality
             location
             skilllevel
             eventtype
