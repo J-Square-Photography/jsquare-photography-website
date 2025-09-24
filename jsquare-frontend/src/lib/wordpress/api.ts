@@ -39,8 +39,8 @@ export interface GalleryPost {
   portfoliodetails?: {
     quality?: string
     location?: string
-    skillLevel?: SkillLevel
-    eventType?: EventType
+    skilllevel?: string[]
+    eventtype?: string[]
   }
 }
 
@@ -83,8 +83,8 @@ const GET_GALLERIES = `
         portfoliodetails {
           quality
           location
-          skillLevel
-          eventType
+          skilllevel
+          eventtype
         }
       }
       pageInfo {
@@ -118,8 +118,8 @@ const GET_GALLERY_BY_SLUG = `
       portfoliodetails {
         quality
         location
-        skillLevel
-        eventType
+        skilllevel
+        eventtype
       }
     }
   }
@@ -205,8 +205,8 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
           portfoliodetails {
             quality
             location
-            skillLevel
-            eventType
+            skilllevel
+            eventtype
           }
           galleryImages: acfGallery {
             images {
@@ -241,12 +241,12 @@ export const getFilteredGalleries = async (
       const matchesSkillLevel =
         !skillLevel ||
         skillLevel === 'all' ||
-        gallery.portfoliodetails?.skillLevel === skillLevel
+        gallery.portfoliodetails?.skilllevel?.includes(skillLevel)
 
       const matchesEventType =
         !eventType ||
         eventType === 'all' ||
-        gallery.portfoliodetails?.eventType === eventType
+        gallery.portfoliodetails?.eventtype?.includes(eventType)
 
       return matchesSkillLevel && matchesEventType
     })

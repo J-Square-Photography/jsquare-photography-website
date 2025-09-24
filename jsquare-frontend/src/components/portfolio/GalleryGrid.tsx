@@ -79,19 +79,19 @@ export function GalleryGrid({ galleries, loading }: GalleryGridProps) {
 
                   {/* Display filters info */}
                   <div className="flex flex-wrap gap-2 text-xs">
-                    {gallery.portfoliodetails?.skillLevel && gallery.portfoliodetails.skillLevel !== 'all' && (
+                    {gallery.portfoliodetails?.skilllevel?.[0] && (
                       <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded capitalize">
-                        {gallery.portfoliodetails.skillLevel}
+                        {gallery.portfoliodetails.skilllevel[0]}
                       </span>
                     )}
-                    {gallery.portfoliodetails?.eventType && gallery.portfoliodetails.eventType !== 'all' && (
+                    {gallery.portfoliodetails?.eventtype?.[0] && (
                       <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded capitalize">
-                        {gallery.portfoliodetails.eventType}
+                        {gallery.portfoliodetails.eventtype[0]}
                       </span>
                     )}
-                    {gallery.categories?.nodes?.[0] && (
+                    {gallery.portfoliodetails?.location && (
                       <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded">
-                        {gallery.categories.nodes[0].name}
+                        {gallery.portfoliodetails.location}
                       </span>
                     )}
                   </div>
