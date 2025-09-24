@@ -1,7 +1,11 @@
 import { GraphQLClient } from 'graphql-request'
 import { SkillLevel, EventType } from './types'
 
-const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'https://www.jsquarephotography.com/graphql'
+const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string
+
+if (!endpoint) {
+  throw new Error('NEXT_PUBLIC_WORDPRESS_API_URL is not defined')
+}
 
 const graphqlClient = new GraphQLClient(endpoint, {
   headers: {
