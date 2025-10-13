@@ -25,17 +25,17 @@ export default function Home() {
           <Hero />
         </Suspense>
 
+        {/* About Section */}
+        <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
+          <AboutSection />
+        </Suspense>
+
         {/* Portfolio Section */}
         <section id="portfolio">
           <Suspense fallback={<div className="h-96" />}>
             <RecentGalleries />
           </Suspense>
         </section>
-
-        {/* About Section */}
-        <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
-          <AboutSection />
-        </Suspense>
 
         {/* Services Section */}
         <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
