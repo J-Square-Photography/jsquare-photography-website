@@ -11,6 +11,9 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { Suspense } from "react"
 import { getAboutSectionContent } from "@/lib/wordpress/api"
 
+// Revalidate this page every 60 seconds
+export const revalidate = 60
+
 export default async function Home() {
   const aboutContent = await getAboutSectionContent()
 

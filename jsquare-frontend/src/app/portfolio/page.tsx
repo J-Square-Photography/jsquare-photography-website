@@ -11,8 +11,8 @@ import { getGalleries } from "@/lib/wordpress/api"
 import { PortfolioFilters as Filters, SkillLevel, EventType } from "@/lib/wordpress/types"
 import type { GalleryPost } from "@/lib/wordpress/api"
 
-// Force dynamic rendering to always fetch fresh data
-export const dynamic = 'force-dynamic'
+// Client component - data fetched on client side
+// Removed force-dynamic to allow static generation
 
 export default function PortfolioPage() {
   const [galleries, setGalleries] = useState<GalleryPost[]>([])

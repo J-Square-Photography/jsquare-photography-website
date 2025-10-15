@@ -11,7 +11,8 @@ const graphqlClient = new GraphQLClient(endpoint, {
   headers: {
     'Content-Type': 'application/json',
   },
-  cache: 'no-store', // Disable caching
+  // Removed cache: 'no-store' to allow static generation
+  // Use Next.js revalidation at page level instead
 })
 
 export interface GalleryPost {
