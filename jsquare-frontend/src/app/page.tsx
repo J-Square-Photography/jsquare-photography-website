@@ -30,7 +30,7 @@ export default async function Home() {
 
         {/* About Section */}
         <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
-          <AboutSection content={aboutContent} />
+          <AboutSection content={aboutContent || undefined} />
         </Suspense>
 
         {/* Portfolio Section */}
