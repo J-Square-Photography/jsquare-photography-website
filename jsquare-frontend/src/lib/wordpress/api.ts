@@ -255,3 +255,141 @@ export const getFilteredGalleries = async (
     return []
   }
 }
+
+export const getAboutSectionContent = async (): Promise<{
+  title: string;
+  description: string;
+  imageUrl: string;
+  ctaText?: string;
+} | null> => {
+  // First, let's try to query with the exact ACF field group name
+  // "About Page Content" should be exposed in GraphQL
+  const GET_ABOUT_CONTENT = `
+    query GetAboutPageContent {
+      pageBy(uri: "about-us") {
+        id
+        title
+        content
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+        aboutUs {
+          title
+          description
+          imageUrl {
+            node {
+              sourceUrl
+              altText
+              mediaDetails {
+                width
+                height
+              }
+            }
+          }
+          ctaButtonText
+        }
+      }
+    }
+  `;
+
+  // Backup query to get page schema
+  const GET_PAGE_SCHEMA = `
+    query GetPageSchema {
+      pageBy(uri: "about-us") {
+        id
+        title
+        content
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    let data: any;
+
+    // First try with the ACF fields
+    try {
+      console.log('Attempting to fetch About page with ACF fields...');
+      data = await graphqlClient.request(GET_ABOUT_CONTENT);
+      console.log('Successfully fetched About page with ACF fields');
+    } catch (acfError: any) {
+      // If ACF query fails, log the error and try basic query
+      console.log('ACF query failed, trying basic page query...');
+      console.log('ACF Error details:', acfError?.response?.errors?.[0]?.message);
+
+      // Try basic query without ACF fields
+      try {
+        data = await graphqlClient.request(GET_PAGE_SCHEMA);
+        console.log('Basic page data retrieved successfully');
+      } catch (basicError) {
+        console.error('Failed to fetch even basic page data:', basicError);
+        return null;
+      }
+    }
+
+    // Check if we have the page
+    if (!data?.pageBy) {
+      console.log('About page not found in WordPress');
+      return null;
+    }
+
+    const page = data.pageBy;
+
+    // Try to extract ACF content if it exists
+    let title = '';
+    let description = '';
+    let imageUrl = '';
+    let ctaText = 'Get in Touch';
+
+    if (page.aboutUs) {
+      // We have ACF data
+      const acf = page.aboutUs;
+      title = acf.title || '';
+      description = acf.description || '';
+      imageUrl = acf.imageUrl?.node?.sourceUrl || '';
+      ctaText = acf.ctaButtonText || 'Get in Touch';
+
+      console.log('Using ACF data for About section');
+    } else {
+      // Fallback to page content
+      console.log('No ACF data found, using page title and content as fallback');
+      title = page.title || 'About J Square Photography';
+
+      // Clean HTML from content if present
+      if (page.content) {
+        description = page.content
+          .replace(/<[^>]*>?/gm, '') // Remove HTML tags
+          .replace(/\n\n+/g, '\n') // Replace multiple newlines with single
+          .trim();
+      }
+
+      imageUrl = page.featuredImage?.node?.sourceUrl || '';
+    }
+
+    // Log what we're returning
+    console.log('About section content:', {
+      hasTitle: !!title,
+      hasDescription: !!description,
+      hasImage: !!imageUrl,
+      hasCtaText: !!ctaText
+    });
+
+    return {
+      title: title || 'About J Square Photography',
+      description: description || 'Professional photography and videography services',
+      imageUrl: imageUrl || '',
+      ctaText: ctaText
+    };
+  } catch (error) {
+    console.error('Error fetching About page content:', error);
+    return null;
+  }
+};

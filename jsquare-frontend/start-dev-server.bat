@@ -5,19 +5,20 @@ echo ========================================
 echo.
 
 echo Checking for existing processes on port 3000...
+set FOUND_PROCESS=0
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr :3000') do (
-    echo Killing process on port 3000 (PID: %%a)
+    echo Found process on port 3000 (PID: %%a)
+    echo Killing only the process using port 3000...
     taskkill /F /PID %%a >nul 2>&1
+    if %errorlevel%==0 (
+        echo Successfully killed process on port 3000
+        set FOUND_PROCESS=1
+    )
     timeout /t 1 >nul
 )
 
-echo Killing any existing Node.js processes...
-taskkill /F /IM node.exe >nul 2>&1
-if %errorlevel%==0 (
-    echo Killed existing Node.js processes
-    timeout /t 2 >nul
-) else (
-    echo No existing Node.js processes found
+if %FOUND_PROCESS%==0 (
+    echo No process found on port 3000
 )
 echo.
 

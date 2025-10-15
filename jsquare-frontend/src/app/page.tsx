@@ -9,8 +9,11 @@ import { FeaturedStory } from "@/components/sections/FeaturedStory"
 import { Footer } from "@/components/sections/Footer"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { Suspense } from "react"
+import { getAboutSectionContent } from "@/lib/wordpress/api"
 
-export default function Home() {
+export default async function Home() {
+  const aboutContent = await getAboutSectionContent()
+
   return (
     <>
       <Navigation />
@@ -27,7 +30,7 @@ export default function Home() {
 
         {/* About Section */}
         <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
-          <AboutSection />
+          <AboutSection content={aboutContent} />
         </Suspense>
 
         {/* Portfolio Section */}

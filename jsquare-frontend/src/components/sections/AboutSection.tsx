@@ -18,6 +18,7 @@ interface AboutSectionProps {
     title: string
     description: string
     imageUrl?: string
+    ctaText?: string
   }
 }
 
@@ -25,6 +26,19 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
+
+  const handleScrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const element = document.querySelector('#contact')
+    if (element) {
+      const offset = 80 // Navigation height
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   useLayoutEffect(() => {
     // Only run on client side
@@ -109,7 +123,8 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
     From intimate weddings to corporate events, we bring a unique perspective
     and artistic vision to every shoot. Our commitment to excellence and
     attention to detail ensures that every photograph tells a story worth remembering.`,
-    imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&h=1000&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&h=1000&fit=crop',
+    ctaText: 'Get in Touch'
   }
 
   const displayContent = content || defaultContent
@@ -134,9 +149,10 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
             <div className="pt-4">
               <a
                 href="#contact"
-                className="inline-flex items-center text-sm font-light tracking-wider text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+                onClick={handleScrollToContact}
+                className="inline-flex items-center text-sm font-light tracking-wider text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 cursor-pointer"
               >
-                Get in Touch
+                {displayContent.ctaText}
                 <svg
                   className="ml-2 w-4 h-4"
                   fill="none"
