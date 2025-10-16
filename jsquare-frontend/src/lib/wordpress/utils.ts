@@ -1,49 +1,67 @@
-export function extractImagesFromContent(content: string): Array<{ sourceUrl: string; altText: string; caption: string }> {
-  const images: Array<{ sourceUrl: string; altText: string; caption: string }> = []
-  const backendUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || ''
+export function extractImagesFromContent(content: string): Array<{ sourceUrl:string; altText:string; caption:string }> {
+  const images: Array<{ sourceUrl:string; altText:string; caption:string }> = [];
+  const backendUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL;
 
-  if (!content) return images
+  if (!content) return images;
+
+  const processUrl = (url: string) => {
+    if (url.startsWith('/')) {
+      if (backendUrl) {
+        return `${backendUrl}${url}`;
+      }
+      // If backendUrl is not set, we cannot resolve the relative URL.
+      // Return null to indicate failure.
+      return null;
+    }
+    return url;
+  };
 
   // Pattern 1: WordPress Gallery Block images
-  const galleryPattern = /<img[^>]+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>/gi
+  const galleryPattern = /<img[^>]+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>/gi;
 
   // Pattern 2: WordPress figure/image blocks
-  const figurePattern = /<figure[^>]*>[\s\S]*?<img[^>]+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>[\s\S]*?(?:<figcaption[^>]*>([\s\S]*?)<\/figcaption>)?[\s\S]*?<\/figure>/gi
+  const figurePattern = /<figure[^>]*>[
+
+	 ]*?<img[^>]+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>[
+
+	 ]*?(?:<figcaption[^>]*>([
+
+	 ]*?)<\/figcaption>)?[
+
+	 ]*?<\/figure>/gi;
 
   // Extract from gallery blocks
-  let match
+  let match;
   while ((match = galleryPattern.exec(content)) !== null) {
-    let sourceUrl = match[1]
-    if (sourceUrl.startsWith('/')) {
-      sourceUrl = `${backendUrl}${sourceUrl}`
+    const sourceUrl = processUrl(match[1]);
+    if (sourceUrl) {
+      // Avoid duplicates that might be caught by both regex patterns
+      if (!images.find(img => img.sourceUrl === sourceUrl)) {
+        images.push({
+          sourceUrl,
+          altText: match[2] || '',
+          caption: '',
+        });
+      }
     }
-    
-    images.push({
-      sourceUrl,
-      altText: match[2] || '',
-      caption: ''
-    })
   }
 
   // Extract from figure blocks (if not already found)
-  galleryPattern.lastIndex = 0 // Reset regex
+  figurePattern.lastIndex = 0; // Reset regex
   while ((match = figurePattern.exec(content)) !== null) {
-    let sourceUrl = match[1]
-    if (sourceUrl.startsWith('/')) {
-      sourceUrl = `${backendUrl}${sourceUrl}`
-    }
+    const sourceUrl = processUrl(match[1]);
 
-    // Check if we already have this image
-    if (!images.find(img => img.sourceUrl === sourceUrl)) {
+    // Check if we already have this image and the URL is valid
+    if (sourceUrl && !images.find(img => img.sourceUrl === sourceUrl)) {
       images.push({
         sourceUrl,
         altText: match[2] || '',
-        caption: match[3] ? match[3].replace(/<[^>]*>/g, '') : '' // Strip HTML from caption
-      })
+        caption: match[3] ? match[3].replace(/<[^>]*>/g, '') : '', // Strip HTML from caption
+      });
     }
   }
 
-  return images
+  return images;
 }
 
 /**
@@ -55,7 +73,15 @@ export function parseWordPressGallery(content: string): string[] {
 
   // Extract image URLs from WordPress gallery block
   // Pattern for wp:gallery blocks
-  const blockPattern = /<!-- wp:gallery[\s\S]*?-->[\s\S]*?<figure[^>]*>([\s\S]*?)<\/figure>[\s\S]*?<!-- \/wp:gallery -->/gi
+  const blockPattern = /<!-- wp:gallery[
+
+	 ]*?-->[
+
+	 ]*?<figure[^>]*>([
+
+	 ]*?)<\/figure>[
+
+	 ]*?<!-- \/wp:gallery -->/gi
 
   let blockMatch
   while ((blockMatch = blockPattern.exec(content)) !== null) {
