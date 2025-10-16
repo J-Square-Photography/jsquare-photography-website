@@ -42,10 +42,10 @@ export default async function GalleryPage({ params }: { params: { slug: string }
     notFound()
   }
 
-  // Extract images from WordPress content (gallery blocks, images, etc.)
+  // Extract images from WordPress post content (gallery blocks, images, etc.)
   const extractedImages = extractImagesFromContent(gallery.content)
 
-  // Use extracted images, or fall back to featured image with caption field
+  // Use extracted images from post content, or fall back to featured image
   const galleryImages = extractedImages.length > 0
     ? extractedImages
     : (gallery.featuredImage ? [{

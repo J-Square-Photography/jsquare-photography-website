@@ -14,10 +14,12 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
   const processUrl = (url: string) => {
     console.log(`[processUrl] Processing URL: ${url}`);
 
-    // Check if URL already has a proper protocol
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      console.log("[processUrl] URL already has proper protocol. Returning as is.");
-      return url;
+    // FIRST: Check for and fix double protocols (e.g., "https://https//")
+    if (url.includes('://') && (url.includes('://https//') || url.includes('://http//'))) {
+      // Remove the duplicate protocol
+      const fixedUrl = url.replace(/https?:\/\/https?\/\//, 'https://');
+      console.log(`[processUrl] Fixed double protocol: ${url} -> ${fixedUrl}`);
+      return fixedUrl;
     }
 
     // Fix malformed protocols (e.g., "https//" without colon)
@@ -31,6 +33,12 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
       const fixedUrl = url.replace('http//', 'http://');
       console.log(`[processUrl] Fixed malformed protocol: ${url} -> ${fixedUrl}`);
       return fixedUrl;
+    }
+
+    // NOW check if URL already has a proper protocol (after fixing malformed ones)
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      console.log("[processUrl] URL has proper protocol. Returning as is.");
+      return url;
     }
 
     // Handle protocol-relative URLs (e.g., "//domain.com")

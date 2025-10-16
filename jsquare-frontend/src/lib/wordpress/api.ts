@@ -209,13 +209,6 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
             skilllevel
             eventtype
           }
-          galleryImages: acfGallery {
-            images {
-              sourceUrl
-              altText
-              caption
-            }
-          }
         }
       }
     }
