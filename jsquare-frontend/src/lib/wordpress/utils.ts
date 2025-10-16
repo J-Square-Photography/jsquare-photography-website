@@ -13,6 +13,34 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
 
   const processUrl = (url: string) => {
     console.log(`[processUrl] Processing URL: ${url}`);
+
+    // Check if URL already has a proper protocol
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      console.log("[processUrl] URL already has proper protocol. Returning as is.");
+      return url;
+    }
+
+    // Fix malformed protocols (e.g., "https//" without colon)
+    if (url.startsWith('https//')) {
+      const fixedUrl = url.replace('https//', 'https://');
+      console.log(`[processUrl] Fixed malformed protocol: ${url} -> ${fixedUrl}`);
+      return fixedUrl;
+    }
+
+    if (url.startsWith('http//')) {
+      const fixedUrl = url.replace('http//', 'http://');
+      console.log(`[processUrl] Fixed malformed protocol: ${url} -> ${fixedUrl}`);
+      return fixedUrl;
+    }
+
+    // Handle protocol-relative URLs (e.g., "//domain.com")
+    if (url.startsWith('//')) {
+      const fixedUrl = `https:${url}`;
+      console.log(`[processUrl] Protocol-relative URL detected. Converted to: ${fixedUrl}`);
+      return fixedUrl;
+    }
+
+    // Handle relative URLs starting with /
     if (url.startsWith('/')) {
       if (backendUrl) {
         const newUrl = `${backendUrl}${url}`;
@@ -22,7 +50,9 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
       console.log("[processUrl] Relative URL detected, but backendUrl is not set. Returning null.");
       return null;
     }
-    console.log("[processUrl] URL is absolute. Returning as is.");
+
+    // For any other format, assume it's already a valid URL
+    console.log("[processUrl] URL format not recognized, returning as is.");
     return url;
   };
 
