@@ -1,9 +1,6 @@
-/**
- * Extract image URLs from WordPress content
- * Handles both gallery blocks and regular images
- */
 export function extractImagesFromContent(content: string): Array<{ sourceUrl: string; altText: string; caption: string }> {
   const images: Array<{ sourceUrl: string; altText: string; caption: string }> = []
+  const backendUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || ''
 
   if (!content) return images
 
@@ -16,8 +13,13 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
   // Extract from gallery blocks
   let match
   while ((match = galleryPattern.exec(content)) !== null) {
+    let sourceUrl = match[1]
+    if (sourceUrl.startsWith('/')) {
+      sourceUrl = `${backendUrl}${sourceUrl}`
+    }
+    
     images.push({
-      sourceUrl: match[1],
+      sourceUrl,
       altText: match[2] || '',
       caption: ''
     })
@@ -26,11 +28,15 @@ export function extractImagesFromContent(content: string): Array<{ sourceUrl: st
   // Extract from figure blocks (if not already found)
   galleryPattern.lastIndex = 0 // Reset regex
   while ((match = figurePattern.exec(content)) !== null) {
-    const url = match[1]
+    let sourceUrl = match[1]
+    if (sourceUrl.startsWith('/')) {
+      sourceUrl = `${backendUrl}${sourceUrl}`
+    }
+
     // Check if we already have this image
-    if (!images.find(img => img.sourceUrl === url)) {
+    if (!images.find(img => img.sourceUrl === sourceUrl)) {
       images.push({
-        sourceUrl: url,
+        sourceUrl,
         altText: match[2] || '',
         caption: match[3] ? match[3].replace(/<[^>]*>/g, '') : '' // Strip HTML from caption
       })
