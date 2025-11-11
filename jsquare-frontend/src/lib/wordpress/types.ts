@@ -28,3 +28,42 @@ export const EVENT_TYPES: FilterOption[] = [
   { label: 'Corporate', value: 'corporate' },
   { label: 'Others', value: 'others' }
 ]
+
+// Service types
+export type ServiceCategory = 'main' | 'additional'
+
+export interface WPImage {
+  sourceUrl: string
+  altText?: string
+  mediaDetails?: {
+    width?: number
+    height?: number
+  }
+}
+
+export interface ServiceFeature {
+  featureItem: string
+}
+
+export interface ServiceDetails {
+  shortDescription?: string
+  featuresList?: ServiceFeature[]
+  pricingInfo?: string
+  serviceCategory?: ServiceCategory
+  whatsappMessageOverride?: string
+  ctaText?: string
+  serviceIcon?: string
+  serviceGallery?: WPImage[]
+}
+
+export interface Service {
+  id: string
+  slug: string
+  title: string
+  content?: string
+  excerpt?: string
+  featuredImage?: {
+    node: WPImage
+  }
+  serviceDetails?: ServiceDetails
+}

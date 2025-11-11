@@ -9,13 +9,22 @@ import { FeaturedStory } from "@/components/sections/FeaturedStory"
 import { Footer } from "@/components/sections/Footer"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { Suspense } from "react"
-import { getAboutSectionContent } from "@/lib/wordpress/api"
+import {
+  getAboutSectionContent,
+  getMainServices,
+  getAdditionalServices,
+} from "@/lib/wordpress/api"
 
 // Revalidate this page every 60 seconds
 export const revalidate = 60
 
 export default async function Home() {
-  const aboutContent = await getAboutSectionContent()
+  // Fetch all data in parallel
+  const [aboutContent, mainServices, additionalServices] = await Promise.all([
+    getAboutSectionContent(),
+    getMainServices(),
+    getAdditionalServices(),
+  ])
 
   return (
     <>
@@ -45,7 +54,10 @@ export default async function Home() {
 
         {/* Services Section */}
         <Suspense fallback={<div className="h-96 bg-white dark:bg-black" />}>
-          <ServicesSection />
+          <ServicesSection
+            mainServices={mainServices}
+            additionalServices={additionalServices}
+          />
         </Suspense>
 
         {/* Team Section */}
