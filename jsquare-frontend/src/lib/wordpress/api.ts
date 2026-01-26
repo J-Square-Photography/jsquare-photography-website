@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { SkillLevel, EventType, Service, ServiceCategory } from './types'
+import { SkillLevel, EventType, Service, ServiceCategory, PricingTier } from './types'
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string
 
@@ -476,155 +476,299 @@ const GET_SERVICE_BY_SLUG = `
   }
 `;
 
+// Shared pricing tiers for photography (skill level × duration)
+// Enthusiast: $150/hr for first 2 hours, then $100/hr additional
+const PHOTOGRAPHY_PRICING_TIERS: PricingTier[] = [
+  {
+    label: 'Beginner (Student)',
+    rates: [
+      { duration: '1 Hour', price: '$30' },
+      { duration: '2 Hours', price: '$60' },
+      { duration: '3 Hours', price: '$90' },
+      { duration: '4 Hours', price: '$120' },
+    ],
+  },
+  {
+    label: 'Novice',
+    rates: [
+      { duration: '1 Hour', price: '$50' },
+      { duration: '2 Hours', price: '$100' },
+      { duration: '3 Hours', price: '$150' },
+      { duration: '4 Hours', price: '$200' },
+    ],
+  },
+  {
+    label: 'Enthusiast (Recommended)',
+    rates: [
+      { duration: '1 Hour', price: '$150' },
+      { duration: '2 Hours', price: '$300' },
+      { duration: '3 Hours', price: '$400' },
+      { duration: '4 Hours', price: '$500' },
+    ],
+  },
+  {
+    label: 'Professional',
+    rates: [
+      { duration: '1 Hour', price: '$150' },
+      { duration: '2 Hours', price: '$300' },
+      { duration: '3 Hours', price: '$450' },
+      { duration: '4 Hours', price: '$600' },
+    ],
+  },
+  {
+    label: 'Director',
+    rates: [
+      { duration: '1 Hour', price: '$200' },
+      { duration: '2 Hours', price: '$400' },
+      { duration: '3 Hours', price: '$600' },
+      { duration: '4 Hours', price: '$800' },
+    ],
+  },
+]
+
+// Shared pricing tiers for videography (skill level × duration)
+const VIDEOGRAPHY_PRICING_TIERS: PricingTier[] = [
+  {
+    label: 'Beginner (Student)',
+    rates: [
+      { duration: '1 Hour', price: '$60' },
+      { duration: '2 Hours', price: '$120' },
+      { duration: '3 Hours', price: '$180' },
+      { duration: '4 Hours', price: '$240' },
+    ],
+  },
+  {
+    label: 'Novice',
+    rates: [
+      { duration: '1 Hour', price: '$100' },
+      { duration: '2 Hours', price: '$200' },
+      { duration: '3 Hours', price: '$300' },
+      { duration: '4 Hours', price: '$400' },
+    ],
+  },
+  {
+    label: 'Enthusiast (Recommended)',
+    rates: [
+      { duration: '1 Hour', price: '$200' },
+      { duration: '2 Hours', price: '$400' },
+      { duration: '3 Hours', price: '$600' },
+      { duration: '4 Hours', price: '$800' },
+    ],
+  },
+  {
+    label: 'Professional',
+    rates: [
+      { duration: '1 Hour', price: '$300' },
+      { duration: '2 Hours', price: '$600' },
+      { duration: '3 Hours', price: '$900' },
+      { duration: '4 Hours', price: '$1,200' },
+    ],
+  },
+  {
+    label: 'Director',
+    rates: [
+      { duration: '1 Hour', price: '$400' },
+      { duration: '2 Hours', price: '$800' },
+      { duration: '3 Hours', price: '$1,200' },
+      { duration: '4 Hours', price: '$1,600' },
+    ],
+  },
+]
+
+// Photobooth pricing tiers (packages × duration)
+const PHOTOBOOTH_PRICING_TIERS: PricingTier[] = [
+  {
+    label: 'Package A — Full Service (Recommended)',
+    rates: [
+      { duration: '2 Hours', price: '$638' },
+      { duration: '3 Hours', price: '$788' },
+      { duration: '4 Hours', price: '$888' },
+    ],
+  },
+  {
+    label: 'Package B — Set-up + Print, No Crew',
+    rates: [
+      { duration: '2 Hours', price: '$538' },
+      { duration: '3 Hours', price: '$688' },
+      { duration: '4 Hours', price: '$788' },
+    ],
+  },
+  {
+    label: 'Package C — Digital Only, No Print, No Crew',
+    rates: [
+      { duration: '2 Hours', price: '$388' },
+      { duration: '3 Hours', price: '$488' },
+      { duration: '4 Hours', price: '$538' },
+    ],
+  },
+]
+
 // Fallback services data (used when WordPress is unavailable)
 const FALLBACK_SERVICES: Service[] = [
   {
     id: 'fallback-1',
-    slug: 'dslr-photobooth',
-    title: 'DSLR Photobooth',
-    content: 'Capture unforgettable moments with our professional DSLR photobooth service. High-quality photos with instant prints and digital copies.',
-    excerpt: 'Professional photobooth with instant prints',
+    slug: 'event-photography',
+    title: 'Event Photography',
+    content:
+      'Our event photography service delivers professional coverage for corporate functions, birthday celebrations, cultural events, and private parties. Every photographer in our roster is matched to your event based on skill level so you get the style and expertise that fits your budget. We handle everything from candid moments to formal group shots, with all photos filtered, edited, and delivered within 2 weeks after your event.',
+    excerpt: 'Professional event photography tailored to your budget',
     serviceDetails: {
-      shortDescription: 'Professional photobooth with instant prints and digital copies for your events.',
+      shortDescription:
+        'Professional event photography with photographers matched to your budget and style.',
       featuresList: [
-        { featureItem: 'Professional DSLR camera with studio lighting' },
-        { featureItem: 'Unlimited prints throughout your event' },
-        { featureItem: 'Custom photo templates and branding' },
-        { featureItem: 'Instant social media sharing' },
-        { featureItem: 'Professional attendant included' },
-        { featureItem: 'Fun props and backdrops available' }
+        { featureItem: 'Photographer matched to your preferred skill level' },
+        { featureItem: 'Filtered and edited photos delivered within 2 weeks' },
+        { featureItem: 'High-resolution digital delivery' },
+        { featureItem: 'Backup equipment on every shoot' },
+        { featureItem: 'Second shooter available for large events' },
       ],
-      pricingInfo: 'Starting at $500',
+      pricingInfo: 'From $150/hr',
+      pricingTiers: PHOTOGRAPHY_PRICING_TIERS,
       serviceCategory: 'main',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-2',
-    slug: 'event-photography',
-    title: 'Event Photography',
-    content: 'Professional event photography services for corporate events, parties, and special occasions.',
-    excerpt: 'Professional coverage of your events',
+    slug: 'event-videography',
+    title: 'Event Videography',
+    content:
+      'Bring your event to life with cinematic videography. Our videographers capture the energy, emotion, and key moments of your occasion in 1080p. Choose from a range of skill levels — from clean, documentary-style coverage to full cinematic productions with a filtered and edited highlight reel. All footage is delivered within 2 weeks after your event.',
+    excerpt: 'Cinematic event videography in 1080p',
     serviceDetails: {
-      shortDescription: 'Professional coverage of your corporate events, parties, and special occasions.',
+      shortDescription:
+        'Cinematic 1080p event videography — from documentary coverage to full cinematic productions.',
       featuresList: [
-        { featureItem: 'Professional photographer with backup equipment' },
-        { featureItem: 'Full event coverage (up to 8 hours)' },
-        { featureItem: 'High-resolution edited photos' },
-        { featureItem: 'Online gallery for easy sharing' },
-        { featureItem: 'Fast turnaround (5-7 business days)' },
-        { featureItem: 'Second shooter available for large events' }
+        { featureItem: '1080p video capture with professional audio' },
+        { featureItem: 'Highlight reel (2–3 min), filtered and edited, delivered within 2 weeks' },
+        { featureItem: 'Full event footage delivered digitally' },
+        { featureItem: 'Basic colour grading and basic audio enhancement' },
       ],
-      pricingInfo: 'Starting at $800',
+      pricingInfo: 'From $200/hr',
+      pricingTiers: VIDEOGRAPHY_PRICING_TIERS,
       serviceCategory: 'main',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-3',
-    slug: 'event-videography',
-    title: 'Event Videography',
-    content: 'Cinematic event videography that tells your story. Professional video production for events and celebrations.',
-    excerpt: 'Cinematic video coverage',
+    slug: 'dslr-photobooth',
+    title: 'DSLR Photobooth',
+    content:
+      'Add a fun, interactive element to your event with our DSLR photobooth. Unlike standard booth rentals, we use professional DSLR cameras with studio lighting for sharp, high-quality photos your guests will actually want to keep.\n\nWe offer three packages to suit different needs:\n\nPackage A (Full Service) — Includes a professional media crew on-site throughout your event to handle everything and troubleshoot any issues, plus an LCD panel with your choice of display content.\n\nPackage B (Set-up + Print, No Crew) — We set up and configure everything before your event. Includes printing but no on-site crew during the event.\n\nPackage C (Digital Only, No Print, No Crew) — The booth is set up for your event with digital photo capture only. No printing and no on-site crew.\n\nPrint formats available: Strips and 4R size. Guests can choose from different templates before printing. We recommend Package A for the best experience.',
+    excerpt: 'Professional DSLR photobooth with instant prints',
     serviceDetails: {
-      shortDescription: 'Cinematic video coverage capturing the essence and emotion of your event.',
+      shortDescription:
+        'High-quality DSLR photobooth with instant prints, custom templates, and a dedicated crew.',
       featuresList: [
-        { featureItem: 'Professional videographer with 4K cameras' },
-        { featureItem: 'Cinematic editing with music' },
-        { featureItem: 'Highlight reel (3-5 minutes)' },
-        { featureItem: 'Full ceremony/event footage' },
-        { featureItem: 'Drone footage available (add-on)' },
-        { featureItem: 'Color grading and audio enhancement' }
+        { featureItem: 'Professional DSLR camera with studio lighting' },
+        { featureItem: 'Industry standard printer with high-quality, fast printing' },
+        { featureItem: 'Unlimited prints (Packages A & B)' },
+        { featureItem: 'Range of backdrops for your selection' },
+        { featureItem: 'Complimentary props provided' },
+        { featureItem: 'Customised graphic designs for photo frame templates' },
+        { featureItem: 'Print formats: Strips and 4R with selectable templates' },
+        { featureItem: 'Professional media crew on-site (Package A)' },
+        { featureItem: 'LCD panel display customisation (Package A)' },
       ],
-      pricingInfo: 'Starting at $1,200',
+      pricingInfo: 'From $388',
+      pricingTiers: PHOTOBOOTH_PRICING_TIERS,
       serviceCategory: 'main',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-4',
     slug: 'wedding-photography-videography',
     title: 'Wedding Photography & Videography',
-    content: 'Complete wedding photography and videography packages to capture every moment of your special day.',
-    excerpt: 'Complete wedding coverage',
+    content:
+      'Your wedding day deserves complete, worry-free coverage. Our wedding packages pair an experienced photographer and videographer to document every moment — from getting ready through the last dance. We work closely with you before the big day to understand your timeline, style preferences, and must-have shots.',
+    excerpt: 'Complete wedding photo and video coverage',
     serviceDetails: {
-      shortDescription: 'Complete wedding coverage from getting ready to reception.',
+      shortDescription:
+        'Complete wedding coverage from preparations to reception, tailored to your vision.',
       featuresList: [
-        { featureItem: 'Full day coverage (up to 10 hours)' },
-        { featureItem: 'Pre-wedding consultation' },
-        { featureItem: 'Two photographers' },
-        { featureItem: 'Professional editing and color grading' },
-        { featureItem: 'Online gallery and USB drive' },
-        { featureItem: 'Engagement shoot included' }
+        { featureItem: 'Full-day coverage (up to 10 hours)' },
+        { featureItem: 'Pre-wedding consultation and timeline planning' },
+        { featureItem: 'Two photographers + videographer' },
+        { featureItem: 'Cinematic highlight film and full ceremony edit' },
+        { featureItem: 'Online gallery and USB drive delivery' },
+        { featureItem: 'Engagement shoot included' },
       ],
-      pricingInfo: 'Custom packages available',
+      pricingInfo: 'Custom packages',
       serviceCategory: 'additional',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-5',
     slug: 'corporate-photography',
     title: 'Corporate Photography',
-    content: 'Professional corporate photography for headshots, team photos, events, and marketing materials.',
-    excerpt: 'Professional corporate headshots',
+    content:
+      'Present a professional image with polished corporate photography. We provide headshots, team photos, office environment shots, and on-site event coverage for businesses of all sizes. Fast turnaround options are available for time-sensitive projects.',
+    excerpt: 'Professional headshots and corporate event coverage',
     serviceDetails: {
-      shortDescription: 'Professional corporate headshots and event coverage.',
+      shortDescription:
+        'Professional headshots, team photos, and corporate event coverage.',
       featuresList: [
-        { featureItem: 'Professional headshots' },
-        { featureItem: 'Corporate event coverage' },
-        { featureItem: 'Team photography' },
+        { featureItem: 'Individual and team headshots' },
+        { featureItem: 'On-location or studio setting' },
+        { featureItem: 'Corporate event and conference coverage' },
         { featureItem: 'Office and facility photography' },
-        { featureItem: 'Marketing and promotional photos' },
-        { featureItem: 'Fast turnaround for urgent needs' }
+        { featureItem: 'Express turnaround available' },
+        { featureItem: 'Brand-consistent editing and retouching' },
       ],
       pricingInfo: 'Contact for pricing',
       serviceCategory: 'additional',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-6',
     slug: 'food-photography',
     title: 'Food Photography',
-    content: 'Mouth-watering food photography for restaurants, cafes, and food businesses.',
-    excerpt: 'Delicious food photography',
+    content:
+      'Make your menu irresistible with professional food photography. We work with restaurants, cafes, caterers, and food brands to create mouth-watering images optimised for print menus, websites, and social media.',
+    excerpt: 'Mouth-watering food photography for menus and marketing',
     serviceDetails: {
-      shortDescription: 'Delicious food photography for menus and marketing materials.',
+      shortDescription:
+        'Stunning food photography for menus, websites, and social media campaigns.',
       featuresList: [
-        { featureItem: 'Professional food styling' },
-        { featureItem: 'Multiple angles and compositions' },
-        { featureItem: 'Natural and studio lighting' },
-        { featureItem: 'High-resolution images' },
-        { featureItem: 'Social media optimized formats' },
-        { featureItem: 'Menu and marketing ready' }
+        { featureItem: 'Professional food styling guidance' },
+        { featureItem: 'Multiple angles and compositions per dish' },
+        { featureItem: 'Natural and studio lighting setups' },
+        { featureItem: 'High-resolution images for print and web' },
+        { featureItem: 'Social-media-ready crops and formats' },
+        { featureItem: 'Flat-lay and lifestyle compositions' },
       ],
-      pricingInfo: 'Starting at $400',
+      pricingInfo: 'From $400',
       serviceCategory: 'additional',
-      ctaText: 'Get Quote'
-    }
+      ctaText: 'Get Quote',
+    },
   },
   {
     id: 'fallback-7',
     slug: 'film-production',
     title: 'Film Production',
-    content: 'Professional video production services for commercials, promotional videos, and branded content.',
-    excerpt: 'Professional video production',
+    content:
+      'From concept to final cut, our film production service covers commercials, promotional videos, brand stories, and social content. We handle scriptwriting, storyboarding, filming, editing, colour grading, and motion graphics — everything you need for a polished final product.',
+    excerpt: 'End-to-end video production for brands and businesses',
     serviceDetails: {
-      shortDescription: 'Professional video production for commercials and branded content.',
+      shortDescription:
+        'End-to-end video production — commercials, promos, and branded content.',
       featuresList: [
-        { featureItem: 'Pre-production planning' },
-        { featureItem: 'Professional crew and equipment' },
+        { featureItem: 'Pre-production planning and storyboarding' },
+        { featureItem: 'Professional crew and cinema-grade equipment' },
         { featureItem: 'Scriptwriting assistance' },
-        { featureItem: 'Professional editing and post-production' },
-        { featureItem: 'Motion graphics and animation' },
-        { featureItem: 'Multiple delivery formats' }
+        { featureItem: 'Editing, colour grading, and sound design' },
+        { featureItem: 'Motion graphics and titling' },
+        { featureItem: 'Delivered in multiple formats and aspect ratios' },
       ],
-      pricingInfo: 'Custom quote required',
+      pricingInfo: 'Custom quote',
       serviceCategory: 'additional',
-      ctaText: 'Get Quote'
-    }
-  }
+      ctaText: 'Get Quote',
+    },
+  },
 ];
 
 export const getServices = async (category?: ServiceCategory): Promise<Service[]> => {

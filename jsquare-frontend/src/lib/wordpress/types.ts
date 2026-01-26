@@ -32,6 +32,16 @@ export const EVENT_TYPES: FilterOption[] = [
 // Service types
 export type ServiceCategory = 'main' | 'additional'
 
+export interface PricingRate {
+  duration: string   // e.g., "1 Hour", "2 Hours", "3 Hours"
+  price: string      // e.g., "$150", "$300"
+}
+
+export interface PricingTier {
+  label: string      // e.g., "Beginner / Student", "Package A"
+  rates: PricingRate[]
+}
+
 export interface WPImage {
   sourceUrl: string
   altText?: string
@@ -49,6 +59,7 @@ export interface ServiceDetails {
   shortDescription?: string
   featuresList?: ServiceFeature[]
   pricingInfo?: string
+  pricingTiers?: PricingTier[]
   serviceCategory?: ServiceCategory
   whatsappMessageOverride?: string
   ctaText?: string

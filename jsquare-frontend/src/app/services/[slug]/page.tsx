@@ -6,6 +6,7 @@ import { getServiceBySlug, getServices } from '@/lib/wordpress/api'
 import { Navigation } from '@/components/navigation/Navigation'
 import { Footer } from '@/components/sections/Footer'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { PricingTable } from '@/components/ui/PricingTable'
 import {
   generateServiceWhatsAppLink,
   DEFAULT_WHATSAPP_NUMBER,
@@ -73,6 +74,7 @@ export default async function ServiceDetailPage({
   const features = service.serviceDetails?.featuresList || []
   const gallery = service.serviceDetails?.serviceGallery || []
   const pricing = service.serviceDetails?.pricingInfo
+  const pricingTiers = service.serviceDetails?.pricingTiers || []
   const ctaText = service.serviceDetails?.ctaText || 'Get Quote'
   const customMessage = service.serviceDetails?.whatsappMessageOverride
   const whatsappLink = generateServiceWhatsAppLink(
@@ -188,6 +190,16 @@ export default async function ServiceDetailPage({
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Pricing Table */}
+              {pricingTiers.length > 0 && (
+                <div className="mb-12">
+                  <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-6">
+                    Pricing
+                  </h2>
+                  <PricingTable tiers={pricingTiers} />
                 </div>
               )}
 
