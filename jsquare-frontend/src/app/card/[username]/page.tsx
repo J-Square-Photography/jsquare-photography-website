@@ -15,12 +15,18 @@ import { CardShareButton } from '@/components/card/CardShareButton'
 
 // Always fetch fresh data - no caching
 export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 // Server-side Supabase client (no cookies needed for public read)
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      global: {
+        fetch: (url, options = {}) => fetch(url, { ...options, cache: 'no-store' }),
+      },
+    }
   )
 }
 
