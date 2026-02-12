@@ -33,8 +33,9 @@ export async function POST() {
       .limit(1)
 
     if (queryError) {
+      console.error('Admin status check failed:', queryError)
       return NextResponse.json(
-        { error: 'Failed to check admin status.' },
+        { error: 'Failed to check admin status.', details: queryError.message },
         { status: 500 }
       )
     }
