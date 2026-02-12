@@ -14,7 +14,7 @@ export function CardPortfolioGallery({ images }: { images: PortfolioImage[] }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Portfolio</h2>
+      <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Portfolio</h2>
       <div className="grid grid-cols-2 gap-2">
         {images.map((img) => (
           <button

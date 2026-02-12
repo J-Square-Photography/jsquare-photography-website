@@ -9,7 +9,7 @@ interface EmbeddedVideo {
 export function CardVideoEmbed({ videos }: { videos: EmbeddedVideo[] }) {
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Videos</h2>
+      <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Videos</h2>
       <div className="space-y-4">
         {videos.map((video) => {
           const embedUrl = getEmbedUrl(video.video_url)
@@ -25,7 +25,7 @@ export function CardVideoEmbed({ videos }: { videos: EmbeddedVideo[] }) {
                 />
               </div>
               {video.title && (
-                <p className="text-sm mt-2 font-medium">{video.title}</p>
+                <p className="text-sm mt-2 font-medium" style={{ color: 'var(--text)' }}>{video.title}</p>
               )}
             </div>
           )
