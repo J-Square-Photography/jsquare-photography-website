@@ -33,6 +33,7 @@ export const Navigation = () => {
   const navItems = [
     { href: isHomePage ? '#portfolio' : '/portfolio', label: 'Portfolio', isHash: isHomePage },
     { href: isHomePage ? '#services' : '/#services', label: 'Services', isHash: isHomePage },
+    { href: isHomePage ? '#pricing' : '/#pricing', label: 'Pricing', isHash: isHomePage },
     { href: isHomePage ? '#about' : '/#about', label: 'About', isHash: isHomePage },
     { href: isHomePage ? '#team' : '/#team', label: 'Team', isHash: isHomePage },
     { href: isHomePage ? '#testimonials' : '/#testimonials', label: 'Testimonials', isHash: isHomePage },

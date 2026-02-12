@@ -1,5 +1,10 @@
 import { GraphQLClient } from 'graphql-request'
-import { SkillLevel, EventType, Service, ServiceCategory, PricingTier } from './types'
+import { SkillLevel, EventType, Service, ServiceCategory } from './types'
+import {
+  PHOTOGRAPHY_PRICING_TIERS,
+  VIDEOGRAPHY_PRICING_TIERS,
+  PHOTOBOOTH_PRICING_TIERS,
+} from '../pricing/data'
 
 const endpoint = process.env.NEXT_PUBLIC_WORDPRESS_API_URL as string
 
@@ -476,132 +481,7 @@ const GET_SERVICE_BY_SLUG = `
   }
 `;
 
-// Shared pricing tiers for photography (skill level × duration)
-// Enthusiast: $150/hr for first 2 hours, then $100/hr additional
-const PHOTOGRAPHY_PRICING_TIERS: PricingTier[] = [
-  {
-    label: 'Beginner (Student)',
-    rates: [
-      { duration: '1 Hour', price: '$30' },
-      { duration: '2 Hours', price: '$60' },
-      { duration: '3 Hours', price: '$90' },
-      { duration: '4 Hours', price: '$120' },
-    ],
-  },
-  {
-    label: 'Novice',
-    rates: [
-      { duration: '1 Hour', price: '$50' },
-      { duration: '2 Hours', price: '$100' },
-      { duration: '3 Hours', price: '$150' },
-      { duration: '4 Hours', price: '$200' },
-    ],
-  },
-  {
-    label: 'Enthusiast (Recommended)',
-    rates: [
-      { duration: '1 Hour', price: '$150' },
-      { duration: '2 Hours', price: '$300' },
-      { duration: '3 Hours', price: '$400' },
-      { duration: '4 Hours', price: '$500' },
-    ],
-  },
-  {
-    label: 'Professional',
-    rates: [
-      { duration: '1 Hour', price: '$150' },
-      { duration: '2 Hours', price: '$300' },
-      { duration: '3 Hours', price: '$450' },
-      { duration: '4 Hours', price: '$600' },
-    ],
-  },
-  {
-    label: 'Director',
-    rates: [
-      { duration: '1 Hour', price: '$200' },
-      { duration: '2 Hours', price: '$400' },
-      { duration: '3 Hours', price: '$600' },
-      { duration: '4 Hours', price: '$800' },
-    ],
-  },
-]
-
-// Shared pricing tiers for videography (skill level × duration)
-const VIDEOGRAPHY_PRICING_TIERS: PricingTier[] = [
-  {
-    label: 'Beginner (Student)',
-    rates: [
-      { duration: '1 Hour', price: '$60' },
-      { duration: '2 Hours', price: '$120' },
-      { duration: '3 Hours', price: '$180' },
-      { duration: '4 Hours', price: '$240' },
-    ],
-  },
-  {
-    label: 'Novice',
-    rates: [
-      { duration: '1 Hour', price: '$100' },
-      { duration: '2 Hours', price: '$200' },
-      { duration: '3 Hours', price: '$300' },
-      { duration: '4 Hours', price: '$400' },
-    ],
-  },
-  {
-    label: 'Enthusiast (Recommended)',
-    rates: [
-      { duration: '1 Hour', price: '$200' },
-      { duration: '2 Hours', price: '$400' },
-      { duration: '3 Hours', price: '$600' },
-      { duration: '4 Hours', price: '$800' },
-    ],
-  },
-  {
-    label: 'Professional',
-    rates: [
-      { duration: '1 Hour', price: '$300' },
-      { duration: '2 Hours', price: '$600' },
-      { duration: '3 Hours', price: '$900' },
-      { duration: '4 Hours', price: '$1,200' },
-    ],
-  },
-  {
-    label: 'Director',
-    rates: [
-      { duration: '1 Hour', price: '$400' },
-      { duration: '2 Hours', price: '$800' },
-      { duration: '3 Hours', price: '$1,200' },
-      { duration: '4 Hours', price: '$1,600' },
-    ],
-  },
-]
-
-// Photobooth pricing tiers (packages × duration)
-const PHOTOBOOTH_PRICING_TIERS: PricingTier[] = [
-  {
-    label: 'Package A — Full Service (Recommended)',
-    rates: [
-      { duration: '2 Hours', price: '$638' },
-      { duration: '3 Hours', price: '$788' },
-      { duration: '4 Hours', price: '$888' },
-    ],
-  },
-  {
-    label: 'Package B — Set-up + Print, No Crew',
-    rates: [
-      { duration: '2 Hours', price: '$538' },
-      { duration: '3 Hours', price: '$688' },
-      { duration: '4 Hours', price: '$788' },
-    ],
-  },
-  {
-    label: 'Package C — Digital Only, No Print, No Crew',
-    rates: [
-      { duration: '2 Hours', price: '$388' },
-      { duration: '3 Hours', price: '$488' },
-      { duration: '4 Hours', price: '$538' },
-    ],
-  },
-]
+// Pricing tiers are imported from @/lib/pricing/data
 
 // Fallback services data (used when WordPress is unavailable)
 const FALLBACK_SERVICES: Service[] = [

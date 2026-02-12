@@ -7,6 +7,7 @@ import { ServicesSection } from "@/components/sections/ServicesSection"
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection"
 import { FeaturedStory } from "@/components/sections/FeaturedStory"
 import { Footer } from "@/components/sections/Footer"
+import { PricingConfiguratorSection } from "@/components/pricing/PricingConfiguratorSection"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { Suspense } from "react"
 import {
@@ -59,6 +60,9 @@ export default async function Home() {
             additionalServices={additionalServices}
           />
         </Suspense>
+
+        {/* Pricing Configurator Section */}
+        <PricingConfiguratorSection />
 
         {/* Team Section */}
         <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-950" />}>
