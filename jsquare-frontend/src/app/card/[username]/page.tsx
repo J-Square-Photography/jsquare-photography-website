@@ -13,7 +13,8 @@ import { CardVCardButton } from '@/components/card/CardVCardButton'
 import { CardBranding } from '@/components/card/CardBranding'
 import { CardShareButton } from '@/components/card/CardShareButton'
 
-export const revalidate = 60
+// Always fetch fresh data - no caching
+export const dynamic = 'force-dynamic'
 
 // Server-side Supabase client (no cookies needed for public read)
 function getSupabase() {
@@ -68,6 +69,10 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
   return {
     title: `${profile.full_name} | J Square Photography`,
     description: profile.bio || `${profile.full_name} - ${profile.job_title || 'Photographer'}`,
+    robots: {
+      index: false,
+      follow: false,
+    },
     openGraph: {
       title: `${profile.full_name} | J Square Photography`,
       description: profile.bio || `${profile.full_name} - ${profile.job_title || 'Photographer'}`,
@@ -88,8 +93,8 @@ export default async function CardPage({ params }: { params: Promise<{ username:
   const themePreset = profile.theme_preset || 'minimal'
 
   const themeStyles: Record<string, { bg: string; text: string; secondary: string }> = {
-    minimal: { bg: '#ffffff', text: '#000000', secondary: '#6b7280' },
-    dark: { bg: '#0a0a0a', text: '#ffffff', secondary: '#9ca3af' },
+    minimal: { bg: '#ffffff', text: '#111111', secondary: '#6b7280' },
+    dark: { bg: '#0a0a0a', text: '#f5f5f5', secondary: '#9ca3af' },
     warm: { bg: '#faf5f0', text: '#2d1810', secondary: '#8b6914' },
     cool: { bg: '#f0f4fa', text: '#0f1729', secondary: '#4b5563' },
     forest: { bg: '#f0faf4', text: '#0f2918', secondary: '#3b6b4a' },
@@ -104,14 +109,13 @@ export default async function CardPage({ params }: { params: Promise<{ username:
       style={{
         backgroundColor: theme.bg,
         color: theme.text,
-        // @ts-expect-error CSS custom properties
-        '--accent': accentColor,
-        '--bg': theme.bg,
-        '--text': theme.text,
-        '--secondary': theme.secondary,
       }}
     >
-      <div className="max-w-lg mx-auto pb-12">
+      <style>{`
+        .card-root { --accent: ${accentColor}; --bg: ${theme.bg}; --text: ${theme.text}; --secondary: ${theme.secondary}; }
+        .card-root * { color: inherit; }
+      `}</style>
+      <div className="card-root max-w-lg mx-auto pb-12">
         <CardHeader
           coverImageUrl={profile.cover_image_url}
           profilePhotoUrl={profile.profile_photo_url}

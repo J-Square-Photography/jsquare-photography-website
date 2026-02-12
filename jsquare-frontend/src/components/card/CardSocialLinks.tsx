@@ -36,9 +36,9 @@ export function CardSocialLinks(props: CardSocialLinksProps) {
           rel="noopener noreferrer"
           aria-label={social.label}
           className="w-10 h-10 rounded-full flex items-center justify-center transition hover:scale-110"
-          style={{ backgroundColor: 'var(--text)', color: 'var(--bg)', opacity: 0.8 }}
+          style={{ backgroundColor: 'var(--text, #000)', opacity: 0.8 }}
         >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <svg className="w-5 h-5" viewBox="0 0 24 24" style={{ color: 'var(--bg, #fff)', fill: 'var(--bg, #fff)' }}>
             <path d={social.path} />
           </svg>
         </a>

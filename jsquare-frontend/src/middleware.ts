@@ -4,11 +4,19 @@ import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-
-  // Run Supabase session refresh on every request
-  const { user, supabaseResponse } = await updateSession(request)
-
   const siteMode = process.env.NEXT_PUBLIC_SITE_MODE || 'live'
+
+  // Try Supabase session refresh - don't crash the site if it fails
+  let user = null
+  let supabaseResponse = NextResponse.next({ request })
+
+  try {
+    const session = await updateSession(request)
+    user = session.user
+    supabaseResponse = session.supabaseResponse
+  } catch {
+    // Supabase unavailable - continue without auth
+  }
 
   // These routes always bypass site-mode redirects
   const bypassPrefixes = ['/card', '/api/vcard', '/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/dashboard']

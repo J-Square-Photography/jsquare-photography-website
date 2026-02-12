@@ -38,7 +38,7 @@ export function CardHeader({ coverImageUrl, profilePhotoUrl, fullName, jobTitle,
 
       {/* Name and title - normal flow below profile photo */}
       <div className="mt-4 text-center px-6">
-        <h1 className="text-2xl font-bold">{fullName}</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{fullName}</h1>
         {jobTitle && (
           <p className="mt-1 text-sm" style={{ color: 'var(--secondary)' }}>{jobTitle}</p>
         )}
