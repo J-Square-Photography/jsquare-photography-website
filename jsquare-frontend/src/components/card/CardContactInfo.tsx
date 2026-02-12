@@ -25,7 +25,7 @@ export function CardContactInfo({ phone, email, whatsapp, telegram, accentColor 
           target={contact.href.startsWith('http') ? '_blank' : undefined}
           rel={contact.href.startsWith('http') ? 'noopener noreferrer' : undefined}
           className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition hover:opacity-80"
-          style={{ backgroundColor: `${accentColor}15`, color: `${accentColor} !important` }}
+          style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: accentColor }}>
             <path strokeLinecap="round" strokeLinejoin="round" d={contact.icon} />

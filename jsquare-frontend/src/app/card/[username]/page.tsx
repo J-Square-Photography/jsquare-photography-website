@@ -118,8 +118,7 @@ export default async function CardPage({ params }: { params: Promise<{ username:
       }}
     >
       <style>{`
-        .card-root { --accent: ${accentColor}; --bg: ${theme.bg}; --text: ${theme.text}; --secondary: ${theme.secondary}; }
-        .card-root * { color: inherit; }
+        .card-root { --accent: ${accentColor}; --bg: ${theme.bg}; --text: ${theme.text}; --secondary: ${theme.secondary}; color: ${theme.text}; }
       `}</style>
       <div className="card-root max-w-lg mx-auto pb-12">
         <CardHeader
