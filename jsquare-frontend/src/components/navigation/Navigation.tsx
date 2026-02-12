@@ -202,13 +202,23 @@ export const Navigation = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleScrollToSection(e, item.href, item.isHash)}
-                    className="text-2xl font-light tracking-wider transition-colors duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer"
-                  >
-                    {item.label}
-                  </a>
+                  {item.isHash ? (
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleScrollToSection(e, item.href, item.isHash)}
+                      className="text-2xl font-light tracking-wider transition-colors duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-2xl font-light tracking-wider transition-colors duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
             </nav>
