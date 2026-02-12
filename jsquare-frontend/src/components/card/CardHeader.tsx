@@ -10,7 +10,7 @@ interface CardHeaderProps {
 
 export function CardHeader({ coverImageUrl, profilePhotoUrl, fullName, jobTitle, accentColor }: CardHeaderProps) {
   return (
-    <div className="relative mb-20">
+    <div className="mb-8">
       {/* Cover image */}
       <div className="h-48 sm:h-56 relative overflow-hidden">
         {coverImageUrl ? (
@@ -20,15 +20,15 @@ export function CardHeader({ coverImageUrl, profilePhotoUrl, fullName, jobTitle,
         )}
       </div>
 
-      {/* Profile photo */}
-      <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+      {/* Profile photo - pulled up to overlap cover */}
+      <div className="flex justify-center -mt-16 relative z-10">
         {profilePhotoUrl ? (
-          <div className="w-32 h-32 rounded-full overflow-hidden border-4 shadow-lg" style={{ borderColor: 'var(--bg, #ffffff)' }}>
+          <div className="w-32 h-32 rounded-full overflow-hidden border-4 shadow-lg flex-shrink-0" style={{ borderColor: 'var(--bg, #ffffff)' }}>
             <Image src={profilePhotoUrl} alt={fullName} width={128} height={128} className="object-cover w-full h-full" />
           </div>
         ) : (
           <div
-            className="w-32 h-32 rounded-full border-4 flex items-center justify-center text-4xl font-bold shadow-lg"
+            className="w-32 h-32 rounded-full border-4 flex items-center justify-center text-4xl font-bold shadow-lg flex-shrink-0"
             style={{ borderColor: 'var(--bg, #ffffff)', backgroundColor: `${accentColor}22`, color: accentColor }}
           >
             {fullName.charAt(0).toUpperCase()}
@@ -36,8 +36,8 @@ export function CardHeader({ coverImageUrl, profilePhotoUrl, fullName, jobTitle,
         )}
       </div>
 
-      {/* Name and title below profile photo */}
-      <div className="pt-20 text-center px-6">
+      {/* Name and title - normal flow below profile photo */}
+      <div className="mt-4 text-center px-6">
         <h1 className="text-2xl font-bold">{fullName}</h1>
         {jobTitle && (
           <p className="mt-1 text-sm" style={{ color: 'var(--secondary)' }}>{jobTitle}</p>
