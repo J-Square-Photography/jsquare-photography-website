@@ -6,6 +6,7 @@ export const loginSchema = z.object({
 })
 
 export const registerSchema = z.object({
+  invite_code: z.string().min(1, 'Invite code is required'),
   full_name: z.string().min(2, 'Name must be at least 2 characters').max(100),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),

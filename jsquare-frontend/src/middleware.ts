@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // These routes always bypass site-mode redirects
-  const bypassPrefixes = ['/card', '/api/vcard', '/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/dashboard']
+  const bypassPrefixes = ['/card', '/api/vcard', '/api/invite', '/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/dashboard']
   const isBypassRoute = bypassPrefixes.some(prefix => pathname.startsWith(prefix))
 
   // Auth route protection: redirect unauthenticated users away from dashboard

@@ -25,6 +25,7 @@ export interface Profile {
   behance: string
   accent_color: string
   theme_preset: string
+  is_admin: boolean
   is_published: boolean
   created_at: string
   updated_at: string

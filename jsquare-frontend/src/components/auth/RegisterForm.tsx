@@ -8,6 +8,7 @@ import { registerSchema, type RegisterInput } from '@/lib/validations/auth'
 
 export function RegisterForm() {
   const [formData, setFormData] = useState<RegisterInput>({
+    invite_code: '',
     full_name: '',
     email: '',
     password: '',
@@ -30,7 +31,34 @@ export function RegisterForm() {
 
     setLoading(true)
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({
+
+    // Validate invite code
+    const { data: invite, error: inviteError } = await supabase
+      .from('invite_codes')
+      .select('id, code, used_by, expires_at')
+      .eq('code', formData.invite_code.trim())
+      .single()
+
+    if (inviteError || !invite) {
+      setError('Invalid invite code')
+      setLoading(false)
+      return
+    }
+
+    if (invite.used_by) {
+      setError('This invite code has already been used')
+      setLoading(false)
+      return
+    }
+
+    if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
+      setError('This invite code has expired')
+      setLoading(false)
+      return
+    }
+
+    // Sign up user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
       options: {
@@ -43,6 +71,14 @@ export function RegisterForm() {
       setError(authError.message)
       setLoading(false)
       return
+    }
+
+    // Mark invite code as used
+    if (authData.user) {
+      await supabase
+        .from('invite_codes')
+        .update({ used_by: authData.user.id, used_at: new Date().toISOString() })
+        .eq('id', invite.id)
     }
 
     setSuccess(true)
@@ -78,6 +114,21 @@ export function RegisterForm() {
           {error}
         </div>
       )}
+
+      <div>
+        <label htmlFor="invite_code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Invite Code
+        </label>
+        <input
+          id="invite_code"
+          type="text"
+          required
+          value={formData.invite_code}
+          onChange={(e) => setFormData(prev => ({ ...prev, invite_code: e.target.value }))}
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent outline-none transition font-mono tracking-wider"
+          placeholder="Enter your invite code"
+        />
+      </div>
 
       <div>
         <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

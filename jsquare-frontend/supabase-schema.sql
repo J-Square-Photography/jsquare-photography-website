@@ -28,6 +28,7 @@ create table if not exists public.profiles (
   behance text default '',
   accent_color text default '#000000',
   theme_preset text default 'minimal',
+  is_admin boolean default false,
   is_published boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
@@ -75,6 +76,17 @@ create table if not exists public.custom_links (
   created_at timestamptz default now()
 );
 
+-- 6. INVITE CODES TABLE
+create table if not exists public.invite_codes (
+  id uuid default gen_random_uuid() primary key,
+  code text unique not null,
+  created_by uuid references public.profiles(id),
+  used_by uuid references public.profiles(id),
+  used_at timestamptz,
+  created_at timestamptz default now(),
+  expires_at timestamptz  -- optional expiry, null = never expires
+);
+
 -- =============================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- =============================================================
@@ -84,6 +96,7 @@ alter table public.portfolio_images enable row level security;
 alter table public.embedded_videos enable row level security;
 alter table public.uploaded_files enable row level security;
 alter table public.custom_links enable row level security;
+alter table public.invite_codes enable row level security;
 
 -- PROFILES: anyone can read published profiles, users can update their own
 create policy "Public profiles are viewable by everyone"
@@ -161,6 +174,52 @@ create policy "Links viewable via published profile"
 create policy "Users can manage own links"
   on public.custom_links for all
   using (auth.uid() = profile_id);
+
+-- PROFILES: Admins can view all profiles
+create policy "Admins can view all profiles"
+  on public.profiles for select
+  using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
+  );
+
+-- PROFILES: Admins can update any profile (for toggling admin)
+create policy "Admins can update any profile"
+  on public.profiles for update
+  using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin = true)
+  );
+
+-- INVITE CODES: Admins can view all invite codes
+create policy "Admins can view invite codes"
+  on public.invite_codes for select
+  using (
+    exists (select 1 from public.profiles where profiles.id = auth.uid() and profiles.is_admin = true)
+  );
+
+-- INVITE CODES: Admins can create invite codes
+create policy "Admins can create invite codes"
+  on public.invite_codes for insert
+  with check (
+    exists (select 1 from public.profiles where profiles.id = auth.uid() and profiles.is_admin = true)
+  );
+
+-- INVITE CODES: Admins can delete unused invite codes
+create policy "Admins can delete invite codes"
+  on public.invite_codes for delete
+  using (
+    exists (select 1 from public.profiles where profiles.id = auth.uid() and profiles.is_admin = true)
+  );
+
+-- INVITE CODES: Anyone can read unused codes to validate during registration
+create policy "Anyone can validate an invite code"
+  on public.invite_codes for select
+  using (used_by is null);
+
+-- INVITE CODES: Allow update to mark code as used during registration
+create policy "Authenticated users can mark invite code as used"
+  on public.invite_codes for update
+  using (used_by is null)
+  with check (used_by = auth.uid());
 
 -- =============================================================
 -- TRIGGERS
