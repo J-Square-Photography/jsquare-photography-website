@@ -3,6 +3,31 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 /**
+ * GET /api/admin/setup
+ *
+ * Check if any admin exists in the system.
+ */
+export async function GET() {
+  try {
+    const adminClient = createAdminClient()
+
+    const { data: existingAdmins, error } = await adminClient
+      .from('profiles')
+      .select('id')
+      .eq('is_admin', true)
+      .limit(1)
+
+    if (error) {
+      return NextResponse.json({ hasAdmin: false }, { status: 500 })
+    }
+
+    return NextResponse.json({ hasAdmin: existingAdmins && existingAdmins.length > 0 })
+  } catch {
+    return NextResponse.json({ hasAdmin: false }, { status: 500 })
+  }
+}
+
+/**
  * POST /api/admin/setup
  *
  * One-time admin bootstrap endpoint.

@@ -73,12 +73,13 @@ export function RegisterForm() {
       return
     }
 
-    // Mark invite code as used
+    // Mark invite code as used (via server route to bypass RLS)
     if (authData.user) {
-      await supabase
-        .from('invite_codes')
-        .update({ used_by: authData.user.id, used_at: new Date().toISOString() })
-        .eq('id', invite.id)
+      await fetch('/api/invite/use', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: formData.invite_code.trim(), userId: authData.user.id }),
+      })
     }
 
     setSuccess(true)

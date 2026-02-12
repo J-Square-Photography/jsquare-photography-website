@@ -10,16 +10,24 @@ export function AdminSetupBanner() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  // Check if any admin exists by trying the setup endpoint with a preflight-style check
-  // We only show this banner if the current user is NOT already an admin
+  // Check if any admin exists in the system
   useEffect(() => {
     if (profileLoading || !profile) return
     if (profile.is_admin) {
       setHasAdmin(true)
       return
     }
-    // We don't know yet if there's another admin — the setup endpoint will tell us
-    setHasAdmin(false)
+
+    const checkAdmin = async () => {
+      try {
+        const res = await fetch('/api/admin/setup')
+        const data = await res.json()
+        setHasAdmin(data.hasAdmin ?? false)
+      } catch {
+        setHasAdmin(false)
+      }
+    }
+    checkAdmin()
   }, [profile, profileLoading])
 
   const handleSetup = async () => {
