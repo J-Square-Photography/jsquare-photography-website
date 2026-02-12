@@ -95,10 +95,10 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
   const defaultMembers: TeamMember[] = [
     {
       id: '1',
-      name: 'John Square',
-      role: 'Lead Photographer & Creative Director',
-      bio: 'With 10+ years of experience in visual storytelling',
-      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop'
+      name: 'Tan Jian Jie',
+      role: 'Founder, Photographer & Videographer',
+      bio: 'Started J Square with a single camera and a relentless eye for the moment in-between moments — the ones people feel but rarely see',
+      imageUrl: '/team-jj.png'
     },
     {
       id: '2',
