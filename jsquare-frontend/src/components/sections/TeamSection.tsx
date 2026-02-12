@@ -151,14 +151,14 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
               className="group relative"
             >
               {/* Image Container */}
-              <div className="relative aspect-[3/4] mb-4 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800">
+              <div className="relative aspect-[3/4] mb-4 overflow-hidden rounded-lg bg-white dark:bg-gray-900">
                 {member.imageUrl && (
                   <Image
                     src={member.imageUrl}
                     alt={member.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
                   />
                 )}
 
