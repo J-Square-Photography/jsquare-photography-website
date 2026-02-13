@@ -1,6 +1,5 @@
 import { Navigation } from "@/components/navigation/Navigation"
 import { Footer } from "@/components/sections/Footer"
-import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { GalleryWithLightbox } from "@/components/gallery/GalleryWithLightbox"
 import { getGalleryBySlug, getGalleries } from "@/lib/wordpress/api"
 import { extractImagesFromContent } from "@/lib/wordpress/utils"
@@ -56,7 +55,6 @@ export default async function GalleryPage({ params }: { params: { slug: string }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-black">
       <Navigation />
-      <ThemeToggle />
 
       <main className="pt-20">
         {/* Enhanced Hero Section with Parallax */}

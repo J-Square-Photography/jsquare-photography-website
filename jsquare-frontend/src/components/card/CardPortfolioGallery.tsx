@@ -22,7 +22,7 @@ export function CardPortfolioGallery({ images }: { images: PortfolioImage[] }) {
             onClick={() => setSelectedImage(img)}
             className="relative aspect-square rounded-lg overflow-hidden group"
           >
-            <Image src={img.image_url} alt={img.caption || 'Portfolio'} fill className="object-cover transition group-hover:scale-105" />
+            <Image src={img.image_url} alt={img.caption || 'Portfolio'} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition group-hover:scale-105" />
           </button>
         ))}
       </div>
