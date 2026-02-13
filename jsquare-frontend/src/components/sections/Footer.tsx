@@ -25,7 +25,7 @@ export const Footer = () => {
             <div className="flex space-x-4 pt-4">
               {/* Social Links */}
               <a
-                href="https://instagram.com/jsquarephotography"
+                href="https://www.instagram.com/jsquarephotographysg"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
@@ -36,7 +36,7 @@ export const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://facebook.com/jsquarephotography"
+                href="https://www.facebook.com/jsquarephotographySG/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
@@ -101,12 +101,36 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-light mb-6">Our Services</h3>
             <ul className="space-y-3">
-              <li className="text-gray-400 text-sm font-light">DSLR Photobooth</li>
-              <li className="text-gray-400 text-sm font-light">Event Photography</li>
-              <li className="text-gray-400 text-sm font-light">Event Videography</li>
-              <li className="text-gray-400 text-sm font-light">Wedding Coverage</li>
-              <li className="text-gray-400 text-sm font-light">Corporate Headshots</li>
-              <li className="text-gray-400 text-sm font-light">Food Photography</li>
+              <li>
+                <Link href="/services/dslr-photobooth" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  DSLR Photobooth
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/event-photography" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  Event Photography
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/event-videography" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  Event Videography
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/wedding-photography-videography" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  Wedding Coverage
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/corporate-photography" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  Corporate Headshots
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/food-photography" className="text-gray-400 hover:text-white transition-colors text-sm font-light">
+                  Food Photography
+                </Link>
+              </li>
             </ul>
           </div>
 

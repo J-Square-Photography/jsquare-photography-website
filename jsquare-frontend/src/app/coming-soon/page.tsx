@@ -1,5 +1,6 @@
 import { Hero } from "@/components/ui/Hero"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
+import { PreviewAccessForm } from "@/components/preview/PreviewAccessForm"
 import { Suspense } from "react"
 
 export default function ComingSoonPage() {
@@ -133,6 +134,10 @@ export default function ComingSoonPage() {
               </svg>
               <span className="text-xs">Carousell</span>
             </a>
+          </div>
+
+          <div className="mt-8">
+            <PreviewAccessForm />
           </div>
 
           {/* Footer Info */}

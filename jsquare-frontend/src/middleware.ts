@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
+function isValidPreviewToken(request: NextRequest): boolean {
+  const token = request.cookies.get('preview-access')?.value
+  if (!token) return false
+  const password = process.env.PREVIEW_PASSWORD
+  if (!password) return false
+  const expected = Buffer.from(`preview:${password}`).toString('base64')
+  return token === expected
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const siteMode = process.env.NEXT_PUBLIC_SITE_MODE || 'live'
@@ -50,6 +59,7 @@ export async function middleware(request: NextRequest) {
       ) {
         return supabaseResponse
       }
+      if (isValidPreviewToken(request)) return supabaseResponse
       return NextResponse.redirect(new URL('/coming-soon', request.url))
     }
 
@@ -62,6 +72,7 @@ export async function middleware(request: NextRequest) {
       ) {
         return supabaseResponse
       }
+      if (isValidPreviewToken(request)) return supabaseResponse
       return NextResponse.redirect(new URL('/under-construction', request.url))
     }
 

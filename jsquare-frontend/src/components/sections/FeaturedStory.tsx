@@ -56,7 +56,7 @@ export const FeaturedStory = async () => {
               {excerpt}
             </p>
             <Link
-              href={`/stories/${featuredStory.slug}`}
+              href={`/blog/${featuredStory.slug}`}
               className="inline-flex items-center text-sm font-light tracking-wider text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
             >
               Read Full Story
