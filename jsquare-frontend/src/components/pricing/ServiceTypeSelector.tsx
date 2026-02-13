@@ -41,7 +41,7 @@ export const ServiceTypeSelector = ({
           <button
             key={s.type}
             onClick={() => onSelect(s.type)}
-            className={`relative rounded-xl p-4 text-left transition-colors duration-200 border ${
+            className={`relative rounded-xl p-2.5 sm:p-4 text-left transition-colors duration-200 overflow-hidden border ${
               isActive
                 ? 'border-gray-900 dark:border-white bg-gray-50 dark:bg-gray-800'
                 : 'border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 bg-white dark:bg-gray-900'
