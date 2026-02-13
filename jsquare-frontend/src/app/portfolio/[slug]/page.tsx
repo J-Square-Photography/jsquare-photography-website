@@ -76,8 +76,8 @@ export default async function GalleryPage({ params }: { params: { slug: string }
           </div>
 
           {/* Multiple gradient overlays for depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/40 to-transparent dark:from-black/70 dark:via-black/40 dark:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-white/20 dark:from-black/20 dark:via-transparent dark:to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/55 to-white/20 dark:from-black/70 dark:via-black/40 dark:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/10 to-white/30 dark:from-black/20 dark:via-transparent dark:to-black/20" />
 
           {/* Content with entrance animation */}
           <div className="relative text-center text-black dark:text-white z-10 px-6 max-w-5xl mx-auto animate-fade-in-up">

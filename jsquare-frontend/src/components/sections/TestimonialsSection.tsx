@@ -248,7 +248,7 @@ export const TestimonialsSection = () => {
             </div>
             <div className="text-center">
               <div className="text-3xl font-light text-gray-900 dark:text-white mb-2">50+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Clients Served</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-light text-gray-900 dark:text-white mb-2">{REVIEW_STATS.averageRating}</div>
