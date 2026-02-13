@@ -125,6 +125,7 @@ export const RecentGalleries = async () => {
                   src={gallery.featuredImage.node.sourceUrl}
                   alt={gallery.featuredImage.node.altText || gallery.title}
                   fill
+                  quality={90}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />

@@ -66,6 +66,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 src={gallery.featuredImage.node.sourceUrl}
                 alt={gallery.featuredImage.node.altText || gallery.title}
                 fill
+                quality={90}
                 className="object-cover animate-slow-zoom"
                 priority
                 sizes="100vw"
