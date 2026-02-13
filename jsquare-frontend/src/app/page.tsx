@@ -8,7 +8,6 @@ import { TestimonialsSection } from "@/components/sections/TestimonialsSection"
 import { FeaturedStory } from "@/components/sections/FeaturedStory"
 import { Footer } from "@/components/sections/Footer"
 import { PricingConfiguratorSection } from "@/components/pricing/PricingConfiguratorSection"
-import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { Suspense } from "react"
 import {
   getAboutSectionContent,
@@ -30,7 +29,6 @@ export default async function Home() {
   return (
     <>
       <Navigation />
-      <ThemeToggle />
       <main className="min-h-screen">
         {/* Hero Section */}
         <Suspense fallback={
@@ -82,7 +80,7 @@ export default async function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-32 px-6 bg-gray-900 dark:bg-black">
+        <section id="contact" className="py-16 md:py-32 px-6 bg-gray-900 dark:bg-black">
           <div className="container mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-extralight text-white mb-8">
               Let's Create Together

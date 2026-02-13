@@ -51,9 +51,9 @@ export const PricingConfigurator = () => {
 
   return (
     <LayoutGroup>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
         {/* Left column -- Controls */}
-        <div className="lg:col-span-3 space-y-10">
+        <div className="lg:col-span-3 space-y-6 md:space-y-10 pb-20 lg:pb-0">
           {/* Service Type */}
           <div>
             <label className="block text-sm text-gray-500 dark:text-gray-400 mb-3 tracking-wider uppercase font-light">

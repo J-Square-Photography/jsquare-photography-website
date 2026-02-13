@@ -129,7 +129,7 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
     <section
       id="team"
       ref={sectionRef}
-      className="relative py-32 px-6 bg-gray-50 dark:bg-gray-950"
+      className="relative py-16 md:py-32 px-6 bg-gray-50 dark:bg-gray-950"
     >
       <div className="container mx-auto">
         {/* Header */}

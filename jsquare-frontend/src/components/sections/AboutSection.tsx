@@ -133,7 +133,7 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-32 px-6 overflow-hidden bg-white dark:bg-black"
+      className="relative py-16 md:py-32 px-6 overflow-hidden bg-white dark:bg-black"
     >
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

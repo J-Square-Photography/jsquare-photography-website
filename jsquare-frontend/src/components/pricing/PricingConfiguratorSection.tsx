@@ -69,12 +69,12 @@ export const PricingConfiguratorSection = () => {
     <section
       id="pricing"
       ref={sectionRef}
-      className="relative py-32 px-6 bg-white dark:bg-black"
+      className="relative pt-16 pb-16 md:py-32 px-6 bg-white dark:bg-black"
     >
       <div className="container mx-auto" ref={contentRef}>
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extralight text-gray-900 dark:text-white mb-4">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extralight text-gray-900 dark:text-white mb-4">
             Build Your Quote
           </h2>
           <p className="text-lg font-light text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">

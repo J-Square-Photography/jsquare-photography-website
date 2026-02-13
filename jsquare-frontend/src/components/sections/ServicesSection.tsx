@@ -136,7 +136,7 @@ export const ServicesSection = ({
     <section
       id="services"
       ref={sectionRef}
-      className="relative py-32 px-6 bg-white dark:bg-black"
+      className="relative py-16 md:py-32 px-6 bg-white dark:bg-black"
     >
       <div className="container mx-auto">
         {/* Header */}

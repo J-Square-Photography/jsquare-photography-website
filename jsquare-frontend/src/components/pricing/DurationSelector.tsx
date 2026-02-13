@@ -14,7 +14,7 @@ export const DurationSelector = ({
   onSelect,
 }: DurationSelectorProps) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-wrap gap-3">
       {durations.map((d, i) => {
         const isActive = selected === i
         return (

@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: Props) {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Blog
+            All Stories
           </Link>
 
           <p className="text-sm text-gray-400 dark:text-gray-500 font-light mb-4">

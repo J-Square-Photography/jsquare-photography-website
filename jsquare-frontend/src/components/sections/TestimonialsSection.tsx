@@ -70,7 +70,7 @@ export const TestimonialsSection = () => {
     <section
       id="testimonials"
       ref={sectionRef}
-      className="relative py-32 px-6 bg-gray-50 dark:bg-gray-950 overflow-hidden"
+      className="relative py-16 md:py-32 px-6 bg-gray-50 dark:bg-gray-950 overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-gray-200/50 dark:from-gray-800/50 to-transparent rounded-full blur-3xl" />
