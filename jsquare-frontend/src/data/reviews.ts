@@ -50,7 +50,6 @@ export const googleReviews: GoogleReview[] = [
     reviewText:
       'The team is very passionate and committed to the filming and they give their 100%. Even though the weather conditions and environment and surroundings were not ideal during the day of the shoot, they were very accommodating and understanding. Thank you Jian Jie and Yi Lin for the outstanding services provided.',
     date: '2025-01-01',
-    relativeTime: '2025',
   },
   {
     id: '2',
@@ -59,7 +58,6 @@ export const googleReviews: GoogleReview[] = [
     reviewText:
       'We had a fun family photoshoot and Mithun & Jinie made us felt relaxed throughout the photoshoot. Nice photos and thanks for helping us to capture the beautiful moments.',
     date: '2025-01-01',
-    relativeTime: '2025',
   },
   {
     id: '3',
@@ -68,7 +66,6 @@ export const googleReviews: GoogleReview[] = [
     reviewText:
       "Very fun experience to be able to had this photo shoot session with JJ! He's a very friendly and experienced photographer who made our entire photo session with him enjoyable! Thank you very much JJ! Highly recommended if you need a photographer for your graduation or event!",
     date: '2025-01-01',
-    relativeTime: '2025',
   },
 ]
 

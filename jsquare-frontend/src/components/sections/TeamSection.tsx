@@ -102,24 +102,15 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
     },
     {
       id: '2',
-      name: 'Sarah Chen',
-      role: 'Videographer & Editor',
-      bio: 'Specializing in cinematic wedding films and documentaries',
-      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=800&fit=crop'
+      name: 'Ju Kong',
+      role: 'Photographer',
+      bio: 'An eye for detail and a passion for capturing authentic moments'
     },
     {
       id: '3',
-      name: 'Mike Rodriguez',
-      role: 'Drone Operator & Photographer',
-      bio: 'Capturing unique perspectives from above',
-      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&h=800&fit=crop'
-    },
-    {
-      id: '4',
-      name: 'Emily Watson',
-      role: 'Post-Production Specialist',
-      bio: 'Bringing stories to life through expert editing',
-      imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop'
+      name: 'Maguire',
+      role: 'Photographer',
+      bio: 'Bringing creative vision and technical expertise to every shoot'
     }
   ]
 
@@ -144,7 +135,7 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
         </div>
 
         {/* Team Grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayMembers.map((member) => (
             <div
               key={member.id}
@@ -152,14 +143,20 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
             >
               {/* Image Container */}
               <div className="relative aspect-[3/4] mb-4 overflow-hidden rounded-lg bg-white dark:bg-gray-900">
-                {member.imageUrl && (
+                {member.imageUrl ? (
                   <Image
                     src={member.imageUrl}
                     alt={member.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain transition-transform duration-500 group-hover:scale-105"
                   />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                    <span className="text-5xl font-light text-gray-400 dark:text-gray-500 select-none">
+                      {member.name.split(' ').map(w => w[0]).join('').toUpperCase()}
+                    </span>
+                  </div>
                 )}
 
                 {/* Overlay on hover */}

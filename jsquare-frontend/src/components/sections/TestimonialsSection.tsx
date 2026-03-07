@@ -25,6 +25,17 @@ function getInitials(name: string) {
     .toUpperCase()
 }
 
+/** Compute a human-friendly relative time from an ISO date string */
+function getRelativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  if (days < 30) return days <= 1 ? 'yesterday' : `${days} days ago`
+  const months = Math.floor(days / 30)
+  if (months < 12) return months === 1 ? 'a month ago' : `${months} months ago`
+  const years = Math.floor(months / 12)
+  return years === 1 ? 'a year ago' : `${years} years ago`
+}
+
 export const TestimonialsSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -36,22 +47,24 @@ export const TestimonialsSection = () => {
     const section = sectionRef.current
     if (!section) return
 
-    // Animate section title
-    gsap.fromTo(
-      section.querySelector('.testimonials-header'),
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    )
+    const ctx = gsap.context(() => {
+      // Animate section title
+      gsap.fromTo(
+        section.querySelector('.testimonials-header'),
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    }, section)
 
     // Auto-rotate testimonials
     const interval = setInterval(() => {
@@ -60,7 +73,7 @@ export const TestimonialsSection = () => {
 
     return () => {
       clearInterval(interval)
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      ctx.revert()
     }
   }, [reviews.length])
 
@@ -182,11 +195,9 @@ export const TestimonialsSection = () => {
                     <div className="font-medium text-gray-900 dark:text-white">
                       {current.reviewerName}
                     </div>
-                    {current.relativeTime && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {current.relativeTime}
-                      </div>
-                    )}
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {getRelativeTime(current.date)}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -5,7 +5,6 @@ import { Metadata } from 'next'
 import { getServiceBySlug, getServices } from '@/lib/wordpress/api'
 import { Navigation } from '@/components/navigation/Navigation'
 import { Footer } from '@/components/sections/Footer'
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { PricingTable } from '@/components/ui/PricingTable'
 import {
   generateServiceWhatsAppLink,
@@ -92,7 +91,6 @@ export default async function ServiceDetailPage({
   return (
     <>
       <Navigation />
-      <ThemeToggle />
       <main className="min-h-screen bg-white dark:bg-black">
         {/* Hero Section */}
         <div className="relative h-[60vh] min-h-[500px] w-full">

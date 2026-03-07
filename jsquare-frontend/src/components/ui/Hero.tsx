@@ -56,38 +56,6 @@ export const Hero = () => {
 
     if (!hero || !title || !subtitle || !logo) return
 
-    // Initial state
-    gsap.set([title, subtitle, logo], { 
-      opacity: 0, 
-      y: 50,
-      scale: 0.9
-    })
-
-    // Entrance animation
-    const tl = gsap.timeline({ delay: 0.5 })
-    
-    tl.to(logo, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 1.2,
-      ease: "power3.out"
-    })
-    .to(title, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 1,
-      ease: "power3.out"
-    }, "-=0.6")
-    .to(subtitle, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.4")
-
     // Parallax effect for text
     const handleMouseMove = (event: MouseEvent) => {
       const { clientX, clientY } = event;
@@ -116,24 +84,58 @@ export const Hero = () => {
       window.addEventListener('mousemove', handleMouseMove);
     }
 
-    // Scroll-driven parallax
-    ScrollTrigger.create({
-      trigger: hero,
-      start: "top top",
-      end: "bottom top",
-      scrub: 1,
-      onUpdate: (self) => {
-        const progress = self.progress
-        gsap.to([title, subtitle, logo], {
-          y: progress * -100,
-          opacity: 1 - progress * 0.8,
-          duration: 0.1
-        })
-      }
-    })
+    const ctx = gsap.context(() => {
+      // Initial state
+      gsap.set([title, subtitle, logo], {
+        opacity: 0,
+        y: 50,
+        scale: 0.9
+      })
+
+      // Entrance animation
+      const tl = gsap.timeline({ delay: 0.5 })
+
+      tl.to(logo, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: "power3.out"
+      })
+      .to(title, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        ease: "power3.out"
+      }, "-=0.6")
+      .to(subtitle, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.4")
+
+      // Scroll-driven parallax
+      ScrollTrigger.create({
+        trigger: hero,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress
+          gsap.to([title, subtitle, logo], {
+            y: progress * -100,
+            opacity: 1 - progress * 0.8,
+            duration: 0.1
+          })
+        }
+      })
+    }, hero)
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ctx.revert()
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('deviceorientation', handleDeviceOrientation);
     }

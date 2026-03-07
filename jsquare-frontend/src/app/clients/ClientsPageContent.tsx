@@ -6,7 +6,6 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Navigation } from '@/components/navigation/Navigation'
 import { Footer } from '@/components/sections/Footer'
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { clients, type Client } from '@/data/clients'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -64,34 +63,38 @@ export default function ClientsPageContent() {
   const gridRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const cards = gridRef.current?.querySelectorAll('.client-card')
-    if (!cards?.length) return
+    const grid = gridRef.current
+    if (!grid) return
 
-    gsap.fromTo(
-      cards,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: 'top 85%',
-        },
-      }
-    )
+    const cards = grid.querySelectorAll('.client-card')
+    if (!cards.length) return
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 85%',
+          },
+        }
+      )
+    }, grid)
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill())
+      ctx.revert()
     }
   }, [])
 
   return (
     <main className="min-h-screen bg-white dark:bg-black">
       <Navigation />
-      <ThemeToggle />
 
       {/* Hero */}
       <section className="pt-40 pb-20 px-6">

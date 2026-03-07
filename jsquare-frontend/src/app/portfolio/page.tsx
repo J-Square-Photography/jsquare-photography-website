@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Navigation } from "@/components/navigation/Navigation"
 import { Footer } from "@/components/sections/Footer"
-import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { PortfolioFilters } from "@/components/portfolio/PortfolioFilters"
 import { GalleryGrid } from "@/components/portfolio/GalleryGrid"
 import { getGalleries } from "@/lib/wordpress/api"
@@ -130,7 +129,6 @@ export default function PortfolioPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       <Navigation />
-      <ThemeToggle />
 
       <main className="pt-20">
         {/* Hero Section */}
