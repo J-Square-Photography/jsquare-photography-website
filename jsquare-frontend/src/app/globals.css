@@ -55,3 +55,40 @@ body {
   animation: gradient 15s ease infinite;
   background-size: 200% 200%;
 }
+
+/* ===== Photobooth Kiosk Animations ===== */
+
+@keyframes pb-bokeh-drift-a {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33%       { transform: translate(40px, -55px) scale(1.15); }
+  66%       { transform: translate(-25px, 30px) scale(0.88); }
+}
+
+@keyframes pb-bokeh-drift-b {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  40%       { transform: translate(-50px, -30px) scale(1.1); }
+  75%       { transform: translate(30px, 40px) scale(0.92); }
+}
+
+@keyframes pb-scan-pulse {
+  0%   { transform: scale(1);    opacity: 0.6; }
+  100% { transform: scale(1.5);  opacity: 0;   }
+}
+
+.pb-bokeh-drift-a {
+  animation-name: pb-bokeh-drift-a;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 18s; /* overridden per-element via inline style */
+}
+
+.pb-bokeh-drift-b {
+  animation-name: pb-bokeh-drift-b;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 22s; /* overridden per-element via inline style */
+}
+
+.pb-scan-pulse-ring {
+  animation: pb-scan-pulse 1.8s ease-out infinite;
+}
