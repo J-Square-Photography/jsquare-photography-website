@@ -64,15 +64,31 @@ export const AboutSection = ({ content }: AboutSectionProps) => {
           {/* Image */}
           <div className="relative animate-slideUp animation-delay-400">
             <div className="aspect-[4/5] relative overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              {displayContent.imageUrl && (
+              {content?.imageUrl ? (
                 <Image
-                  src={displayContent.imageUrl}
+                  src={content.imageUrl}
                   alt="About J Square Photography"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
+              ) : (
+                <>
+                  <Image
+                    src="/about-team-light.png"
+                    alt="About J Square Photography"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover block dark:hidden"
+                  />
+                  <Image
+                    src="/about-team-dark.png"
+                    alt="About J Square Photography"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover hidden dark:block"
+                  />
+                </>
               )}
             </div>
             {/* Decorative element */}
