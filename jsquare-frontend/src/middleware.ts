@@ -15,21 +15,29 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const siteMode = process.env.NEXT_PUBLIC_SITE_MODE || 'live'
 
-  // Try Supabase session refresh - don't crash the site if it fails
-  let user = null
-  let supabaseResponse = NextResponse.next({ request })
-
-  try {
-    const session = await updateSession(request)
-    user = session.user
-    supabaseResponse = session.supabaseResponse
-  } catch {
-    // Supabase unavailable - continue without auth
-  }
-
   // These routes always bypass site-mode redirects
   const bypassPrefixes = ['/card', '/api/vcard', '/api/invite', '/api/admin', '/auth', '/login', '/register', '/forgot-password', '/reset-password', '/onboarding', '/dashboard', '/jspphotobooth']
   const isBypassRoute = bypassPrefixes.some(prefix => pathname.startsWith(prefix))
+
+  // Only call Supabase for routes that actually need auth checks
+  const needsAuth =
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/onboarding') ||
+    pathname === '/login' ||
+    pathname === '/register'
+
+  let user = null
+  let supabaseResponse = NextResponse.next({ request })
+
+  if (needsAuth) {
+    try {
+      const session = await updateSession(request)
+      user = session.user
+      supabaseResponse = session.supabaseResponse
+    } catch {
+      // Supabase unavailable - continue without auth
+    }
+  }
 
   // Auth route protection: redirect unauthenticated users away from dashboard
   if (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding')) {
