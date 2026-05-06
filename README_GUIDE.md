@@ -519,5 +519,5 @@ Copyright © 2025 J Square Photography. All rights reserved.
 
 ---
 
-*Last Updated: January 2025*
-*Version: 1.0.0*
+*Last Updated: January 2026*
+*Version: 1.0.1*
