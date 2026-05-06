@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 
 interface GalleryImage {
@@ -16,6 +16,8 @@ interface GalleryWithLightboxProps {
 
 export function GalleryWithLightbox({ images, galleryTitle }: GalleryWithLightboxProps) {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
+  const touchStartX = useRef<number>(0)
+  const isSwiping = useRef<boolean>(false)
 
   const openLightbox = (index: number) => {
     setSelectedImage(index)
@@ -80,7 +82,19 @@ export function GalleryWithLightbox({ images, galleryTitle }: GalleryWithLightbo
       {selectedImage !== null && (
         <div
           className="fixed inset-0 z-50 bg-white/95 dark:bg-black/95 flex items-center justify-center"
-          onClick={closeLightbox}
+          onClick={() => { if (!isSwiping.current) closeLightbox() }}
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX
+            isSwiping.current = false
+          }}
+          onTouchEnd={(e) => {
+            const diff = touchStartX.current - e.changedTouches[0].clientX
+            if (Math.abs(diff) > 50) {
+              isSwiping.current = true
+              if (diff > 0) goToNext()
+              else goToPrevious()
+            }
+          }}
         >
           {/* Close Button */}
           <button
