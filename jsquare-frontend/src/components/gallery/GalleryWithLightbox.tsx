@@ -84,16 +84,21 @@ export function GalleryWithLightbox({ images, galleryTitle }: GalleryWithLightbo
           className="fixed inset-0 z-50 bg-white/95 dark:bg-black/95 flex items-center justify-center"
           onClick={() => { if (!isSwiping.current) closeLightbox() }}
           onTouchStart={(e) => {
-            touchStartX.current = e.touches[0].clientX
-            isSwiping.current = false
+            if (e.touches.length === 1) {
+              touchStartX.current = e.touches[0].clientX
+              isSwiping.current = false
+            }
           }}
           onTouchEnd={(e) => {
-            const diff = touchStartX.current - e.changedTouches[0].clientX
-            if (Math.abs(diff) > 50) {
-              isSwiping.current = true
-              if (diff > 0) goToNext()
-              else goToPrevious()
+            if (e.changedTouches.length === 1 && touchStartX.current !== 0) {
+              const diff = touchStartX.current - e.changedTouches[0].clientX
+              if (Math.abs(diff) > 50) {
+                isSwiping.current = true
+                if (diff > 0) goToNext()
+                else goToPrevious()
+              }
             }
+            touchStartX.current = 0
           }}
         >
           {/* Close Button */}
