@@ -110,14 +110,14 @@ export function GalleryWithLightbox({ images, galleryTitle }: GalleryWithLightbo
           {/* Previous Button */}
           {selectedImage > 0 && (
             <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-800 hover:text-black dark:text-white/80 dark:hover:text-white transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/30 text-white transition-colors backdrop-blur-sm"
               onClick={(e) => {
                 e.stopPropagation()
                 goToPrevious()
               }}
               aria-label="Previous"
             >
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -126,14 +126,14 @@ export function GalleryWithLightbox({ images, galleryTitle }: GalleryWithLightbo
           {/* Next Button */}
           {selectedImage < images.length - 1 && (
             <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-800 hover:text-black dark:text-white/80 dark:hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/30 text-white transition-colors backdrop-blur-sm"
               onClick={(e) => {
                 e.stopPropagation()
                 goToNext()
               }}
               aria-label="Next"
             >
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>

@@ -208,6 +208,7 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
             isVisible ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setSelectedMember(null)}
+          style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
         >
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
