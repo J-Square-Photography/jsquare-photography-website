@@ -53,6 +53,8 @@ export const ServicesSection = ({
 
     if (!section) return
 
+    const refreshTriggers = () => ScrollTrigger.refresh()
+
     // Small delay to ensure DOM is ready
     let ctx: any
     const timer = setTimeout(() => {
@@ -72,6 +74,7 @@ export const ServicesSection = ({
             duration: 1,
             stagger: 0.15,
             ease: 'power3.out',
+            clearProps: 'all',
             scrollTrigger: {
               trigger: mainCards,
               start: 'top 80%',
@@ -95,6 +98,7 @@ export const ServicesSection = ({
             duration: 0.8,
             stagger: 0.1,
             ease: 'power3.out',
+            clearProps: 'all',
             scrollTrigger: {
               trigger: additionalCards,
               start: 'top 80%',
@@ -104,10 +108,18 @@ export const ServicesSection = ({
           })
         }
       }, section)
+
+      // Recalculate trigger positions once layout has settled. Without this, a
+      // refresh while already scrolled to this section computes positions too
+      // early and leaves the cards stuck mid-animation (misaligned). Refresh
+      // again on window load so late-loading images don't throw it off either.
+      ScrollTrigger.refresh()
+      window.addEventListener('load', refreshTriggers)
     }, 100) // Small delay for DOM
 
     return () => {
       clearTimeout(timer)
+      window.removeEventListener('load', refreshTriggers)
       if (ctx) {
         ctx.revert()
       }
