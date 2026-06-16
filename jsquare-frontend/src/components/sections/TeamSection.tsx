@@ -130,10 +130,10 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
     },
     {
       id: '3',
-      name: 'Maguire',
+      name: 'Eliza',
       role: 'Photographer',
       bio: 'Bringing creative vision and technical expertise to every shoot',
-      details: 'Maguire\'s background in fine arts gives his photography a distinctive quality — compositions that feel intentional without ever feeling stiff. He excels in both studio and on-location work, adapting quickly to light and environment.\n\nWhether it\'s a corporate headshot or a full event coverage, Maguire delivers images with consistent polish and a creative edge.'
+      details: 'Eliza\'s background in fine arts gives her photography a distinctive quality — compositions that feel intentional without ever feeling stiff. She excels in both studio and on-location work, adapting quickly to light and environment.\n\nWhether it\'s a corporate headshot or a full event coverage, Eliza delivers images with consistent polish and a creative edge.'
     }
   ]
 

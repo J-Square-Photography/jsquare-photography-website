@@ -6,10 +6,24 @@ import { getServiceBySlug, getServices } from '@/lib/wordpress/api'
 import { Navigation } from '@/components/navigation/Navigation'
 import { Footer } from '@/components/sections/Footer'
 import { PricingTable } from '@/components/ui/PricingTable'
+import { GalleryWithLightbox } from '@/components/gallery/GalleryWithLightbox'
 import {
   generateServiceWhatsAppLink,
   DEFAULT_WHATSAPP_NUMBER,
 } from '@/lib/utils/whatsapp'
+
+// Convert a YouTube/Vimeo URL into an embeddable player URL. Returns null for
+// anything we don't recognise, so the video section simply won't render.
+function getVideoEmbedUrl(url?: string): string | null {
+  if (!url) return null
+  const yt = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/
+  )
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`
+  return null
+}
 
 // Revalidate every 60 seconds
 export const revalidate = 60
@@ -72,6 +86,7 @@ export default async function ServiceDetailPage({
 
   const features = service.serviceDetails?.featuresList || []
   const gallery = service.serviceDetails?.serviceGallery || []
+  const videoEmbedUrl = getVideoEmbedUrl(service.serviceDetails?.videoUrl)
   const pricing = service.serviceDetails?.pricingInfo
   const pricingTiers = service.serviceDetails?.pricingTiers || []
   const ctaText = service.serviceDetails?.ctaText || 'Get Quote'
@@ -201,27 +216,37 @@ export default async function ServiceDetailPage({
                 </div>
               )}
 
+              {/* Video */}
+              {videoEmbedUrl && (
+                <div className="mb-12">
+                  <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-6">
+                    Watch
+                  </h2>
+                  <div className="relative w-full aspect-video overflow-hidden rounded-lg bg-black">
+                    <iframe
+                      src={videoEmbedUrl}
+                      title={`${service.title} video`}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Gallery */}
               {gallery.length > 0 && (
                 <div className="mb-12">
                   <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-6">
                     Gallery
                   </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {gallery.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square overflow-hidden rounded-lg"
-                      >
-                        <Image
-                          src={image.sourceUrl}
-                          alt={image.altText || `Gallery image ${index + 1}`}
-                          fill
-                          className="object-cover hover:scale-110 transition-transform duration-300"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <GalleryWithLightbox
+                    images={gallery.map((image) => ({
+                      sourceUrl: image.sourceUrl,
+                      altText: image.altText ?? '',
+                    }))}
+                    galleryTitle={service.title}
+                  />
                 </div>
               )}
             </div>

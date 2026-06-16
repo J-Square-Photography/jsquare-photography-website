@@ -431,17 +431,8 @@ const GET_SERVICES = `
           }
           pricingInfo
           serviceCategory
-          whatsappMessageOverride
           ctaText
-          serviceIcon
-          serviceGallery {
-            sourceUrl
-            altText
-            mediaDetails {
-              width
-              height
-            }
-          }
+          whatsappMessageOverride
         }
       }
     }
@@ -473,15 +464,17 @@ const GET_SERVICE_BY_SLUG = `
         }
         pricingInfo
         serviceCategory
-        whatsappMessageOverride
         ctaText
-        serviceIcon
+        whatsappMessageOverride
+        videoUrl
         serviceGallery {
-          sourceUrl
-          altText
-          mediaDetails {
-            width
-            height
+          nodes {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
           }
         }
       }
@@ -659,17 +652,20 @@ const FALLBACK_SERVICES: Service[] = [
   },
 ];
 
-// WPGraphQL exposes ACF Select fields as a list, so serviceCategory arrives as
-// ['main'] rather than 'main'. Coerce it back to a single value.
+// WPGraphQL exposes ACF Select fields as a list and Gallery fields as a
+// { nodes } connection. Coerce serviceCategory back to a single value and
+// flatten serviceGallery to a plain array so components can use them directly.
 const normalizeService = (node: any): Service => {
   const details = node?.serviceDetails
   if (!details) return node as Service
   const rawCategory = details.serviceCategory
+  const rawGallery = details.serviceGallery
   return {
     ...node,
     serviceDetails: {
       ...details,
       serviceCategory: Array.isArray(rawCategory) ? rawCategory[0] : rawCategory,
+      serviceGallery: rawGallery?.nodes ?? rawGallery ?? [],
     },
   } as Service
 }

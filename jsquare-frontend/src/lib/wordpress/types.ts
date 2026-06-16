@@ -65,6 +65,7 @@ export interface ServiceDetails {
   ctaText?: string
   serviceIcon?: string
   serviceGallery?: WPImage[]
+  videoUrl?: string
 }
 
 export interface Service {
