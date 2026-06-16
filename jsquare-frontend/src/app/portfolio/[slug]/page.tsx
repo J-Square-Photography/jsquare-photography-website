@@ -42,7 +42,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
 
   // Photos come from the SCF Gallery field (galleryImages) — one photo set per event.
   // The featured image is the only safety net if the field is empty.
-  const cmsGalleryImages = (gallery.portfoliodetails?.galleryImages?.nodes ?? []).map((node) => ({
+  const cmsGalleryImages = (gallery.portfolioDetails?.galleryImages?.nodes ?? []).map((node) => ({
     sourceUrl: node.sourceUrl,
     altText: node.altText ?? '',
     caption: node.caption ?? '',
@@ -135,10 +135,10 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {gallery.portfoliodetails?.skilllevel?.[0] && (
+              {gallery.portfolioDetails?.skillLevel?.[0] && (
                 <div className="group">
                   <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
-                    {gallery.portfoliodetails.skilllevel[0]}
+                    {gallery.portfolioDetails.skillLevel[0]}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Skill Level
@@ -146,10 +146,10 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 </div>
               )}
 
-              {gallery.portfoliodetails?.eventtype?.[0] && (
+              {gallery.portfolioDetails?.eventType?.[0] && (
                 <div className="group">
                   <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
-                    {gallery.portfoliodetails.eventtype[0]}
+                    {gallery.portfolioDetails.eventType[0]}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                     Event Type
@@ -159,7 +159,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
 
               <div className="group">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">
-                  {gallery.portfoliodetails?.location || 'Singapore'}
+                  {gallery.portfolioDetails?.location || 'Singapore'}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                   Location

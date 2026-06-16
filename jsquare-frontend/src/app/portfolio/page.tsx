@@ -76,12 +76,12 @@ export default function PortfolioPage() {
       // For skill level filtering
       const matchesSkillLevel =
         filters.skillLevel === 'all' || // Show all when filter is 'all'
-        gallery.portfoliodetails?.skilllevel?.includes(filters.skillLevel) // Match specific skill level
+        gallery.portfolioDetails?.skillLevel?.includes(filters.skillLevel) // Match specific skill level
 
       // For event type filtering
       const matchesEventType =
         filters.eventType === 'all' || // Show all when filter is 'all'
-        gallery.portfoliodetails?.eventtype?.includes(filters.eventType) // Match specific event type
+        gallery.portfolioDetails?.eventType?.includes(filters.eventType) // Match specific event type
 
       return matchesSkillLevel && matchesEventType
     })

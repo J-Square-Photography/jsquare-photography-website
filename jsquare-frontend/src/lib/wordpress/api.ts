@@ -39,10 +39,10 @@ export interface GalleryPost {
     }>
   }
   date: string
-  portfoliodetails?: {
+  portfolioDetails?: {
     location?: string
-    skilllevel?: string[]
-    eventtype?: string[]
+    skillLevel?: string[]
+    eventType?: string[]
     galleryImages?: {
       nodes: Array<{
         sourceUrl: string
@@ -89,10 +89,10 @@ const GET_GALLERIES = `
             slug
           }
         }
-        portfoliodetails {
+        portfolioDetails {
           location
-          skilllevel
-          eventtype
+          skillLevel
+          eventType
         }
       }
       pageInfo {
@@ -124,10 +124,10 @@ const GET_GALLERY_BY_SLUG = `
           slug
         }
       }
-      portfoliodetails {
+      portfolioDetails {
         location
-        skilllevel
-        eventtype
+        skillLevel
+        eventType
         galleryImages {
           nodes {
             sourceUrl
@@ -217,10 +217,10 @@ export const getGalleriesByCategory = async (categorySlug: string, first = 10): 
               slug
             }
           }
-          portfoliodetails {
+          portfolioDetails {
             location
-            skilllevel
-            eventtype
+            skillLevel
+            eventType
           }
         }
       }
@@ -248,12 +248,12 @@ export const getFilteredGalleries = async (
       const matchesSkillLevel =
         !skillLevel ||
         skillLevel === 'all' ||
-        gallery.portfoliodetails?.skilllevel?.includes(skillLevel)
+        gallery.portfolioDetails?.skillLevel?.includes(skillLevel)
 
       const matchesEventType =
         !eventType ||
         eventType === 'all' ||
-        gallery.portfoliodetails?.eventtype?.includes(eventType)
+        gallery.portfolioDetails?.eventType?.includes(eventType)
 
       return matchesSkillLevel && matchesEventType
     })
