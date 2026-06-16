@@ -652,6 +652,14 @@ const FALLBACK_SERVICES: Service[] = [
   },
 ];
 
+// The detailed pricing tier tables live in code (not the CMS). Re-attach them to
+// CMS services by slug so the pricing table still renders for these services.
+const PRICING_TIERS_BY_SLUG: Record<string, typeof PHOTOGRAPHY_PRICING_TIERS> = {
+  'event-photography': PHOTOGRAPHY_PRICING_TIERS,
+  'event-videography': VIDEOGRAPHY_PRICING_TIERS,
+  'dslr-photobooth': PHOTOBOOTH_PRICING_TIERS,
+}
+
 // WPGraphQL exposes ACF Select fields as a list and Gallery fields as a
 // { nodes } connection. Coerce serviceCategory back to a single value and
 // flatten serviceGallery to a plain array so components can use them directly.
@@ -666,6 +674,7 @@ const normalizeService = (node: any): Service => {
       ...details,
       serviceCategory: Array.isArray(rawCategory) ? rawCategory[0] : rawCategory,
       serviceGallery: rawGallery?.nodes ?? rawGallery ?? [],
+      pricingTiers: PRICING_TIERS_BY_SLUG[node.slug] ?? details.pricingTiers,
     },
   } as Service
 }
