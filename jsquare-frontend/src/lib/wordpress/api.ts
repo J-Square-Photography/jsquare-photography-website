@@ -659,6 +659,21 @@ const FALLBACK_SERVICES: Service[] = [
   },
 ];
 
+// WPGraphQL exposes ACF Select fields as a list, so serviceCategory arrives as
+// ['main'] rather than 'main'. Coerce it back to a single value.
+const normalizeService = (node: any): Service => {
+  const details = node?.serviceDetails
+  if (!details) return node as Service
+  const rawCategory = details.serviceCategory
+  return {
+    ...node,
+    serviceDetails: {
+      ...details,
+      serviceCategory: Array.isArray(rawCategory) ? rawCategory[0] : rawCategory,
+    },
+  } as Service
+}
+
 export const getServices = async (category?: ServiceCategory): Promise<Service[]> => {
   try {
     console.log('Fetching services from WordPress...');
@@ -672,7 +687,7 @@ export const getServices = async (category?: ServiceCategory): Promise<Service[]
     }
 
     console.log(`Successfully fetched ${data.services.nodes.length} services from WordPress`);
-    const services = data.services.nodes as Service[];
+    const services: Service[] = data.services.nodes.map(normalizeService);
 
     // Filter by category if specified
     if (category) {
@@ -700,7 +715,7 @@ export const getServiceBySlug = async (slug: string): Promise<Service | null> =>
     }
 
     console.log(`Successfully fetched service: ${slug}`);
-    return data.serviceBy as Service;
+    return normalizeService(data.serviceBy);
   } catch (error) {
     console.error(`Error fetching service ${slug}:`, error);
     console.log('Checking fallback data');
