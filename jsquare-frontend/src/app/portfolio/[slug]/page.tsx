@@ -2,7 +2,6 @@ import { Navigation } from "@/components/navigation/Navigation"
 import { Footer } from "@/components/sections/Footer"
 import { GalleryWithLightbox } from "@/components/gallery/GalleryWithLightbox"
 import { getGalleryBySlug, getGalleries } from "@/lib/wordpress/api"
-import { extractImagesFromContent } from "@/lib/wordpress/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -41,12 +40,16 @@ export default async function GalleryPage({ params }: { params: { slug: string }
     notFound()
   }
 
-  // Extract images from WordPress post content (gallery blocks, images, etc.)
-  const extractedImages = extractImagesFromContent(gallery.content)
+  // Photos come from the SCF Gallery field (galleryImages) — one photo set per event.
+  // The featured image is the only safety net if the field is empty.
+  const cmsGalleryImages = (gallery.portfoliodetails?.galleryImages?.nodes ?? []).map((node) => ({
+    sourceUrl: node.sourceUrl,
+    altText: node.altText ?? '',
+    caption: node.caption ?? '',
+  }))
 
-  // Use extracted images from post content, or fall back to featured image
-  const galleryImages = extractedImages.length > 0
-    ? extractedImages
+  const galleryImages = cmsGalleryImages.length > 0
+    ? cmsGalleryImages
     : (gallery.featuredImage ? [{
         ...gallery.featuredImage.node,
         caption: ''

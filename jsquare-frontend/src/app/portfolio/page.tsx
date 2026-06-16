@@ -87,44 +87,8 @@ export default function PortfolioPage() {
     })
   }, [galleries, filters])
 
-  // Use placeholder galleries if no WordPress content and not loading
-  const displayGalleries = useMemo(() => {
-    if (!loading && galleries.length === 0) {
-      // Return placeholder galleries with mock filter data
-      return [1, 2, 3, 4, 5, 6].map(i => ({
-        id: `placeholder-${i}`,
-        title: `Sample Gallery ${i}`,
-        slug: `sample-gallery-${i}`,
-        excerpt: '',
-        content: '',
-        date: new Date().toISOString(),
-        featuredImage: {
-          node: {
-            sourceUrl: `https://images.unsplash.com/photo-${
-              [
-                '1519741497674-611481863552',
-                '1540575467063-178a50c2df87',
-                '1531746020798-e6953c6e8e04',
-                '1511285560929-e80d1b2a8a2f',
-                '1606216794138-b2e9a57c3c9f',
-                '1519167758481-ac2b39a44bdc'
-              ][i - 1]
-            }?w=800&h=1000&fit=crop`,
-            altText: `Gallery ${i}`
-          }
-        },
-        categories: {
-          nodes: [{ name: 'Sample', slug: 'sample' }]
-        },
-        portfoliodetails: {
-          skilllevel: [['beginner', 'novice', 'enthusiast', 'professional', 'director', 'beginner'][i - 1]],
-          eventtype: [['weddings', 'events', 'photobooth', 'corporate', 'others', 'weddings'][i - 1]],
-          location: 'Singapore'
-        }
-      }))
-    }
-    return filteredGalleries
-  }, [loading, galleries, filteredGalleries])
+  // Show only real CMS galleries — no fake placeholders.
+  const displayGalleries = filteredGalleries
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -152,11 +116,37 @@ export default function PortfolioPage() {
               onFilterChange={handleFilterChange}
             />
 
-            {/* Gallery Grid */}
-            <GalleryGrid
-              galleries={displayGalleries}
-              loading={loading}
-            />
+            {/* Gallery Grid — or a clean empty state when there's no real content yet */}
+            {!loading && displayGalleries.length === 0 ? (
+              <div className="text-center py-24">
+                <svg
+                  className="w-16 h-16 mx-auto mb-6 text-gray-300 dark:text-gray-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <h3 className="text-2xl font-extralight text-gray-900 dark:text-white mb-2">
+                  {galleries.length === 0 ? 'Galleries coming soon' : 'No galleries match your filters'}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 font-light">
+                  {galleries.length === 0
+                    ? 'New work is on the way — check back shortly.'
+                    : 'Try adjusting or clearing the filters above.'}
+                </p>
+              </div>
+            ) : (
+              <GalleryGrid
+                galleries={displayGalleries}
+                loading={loading}
+              />
+            )}
 
             {/* Load More Button */}
             {!loading && hasMore && (

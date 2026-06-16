@@ -32,13 +32,6 @@ export interface GalleryPost {
       altText: string
     }
   }
-  galleryImages?: {
-    nodes: Array<{
-      sourceUrl: string
-      altText: string
-      caption: string
-    }>
-  }
   categories: {
     nodes: Array<{
       name: string
@@ -50,6 +43,13 @@ export interface GalleryPost {
     location?: string
     skilllevel?: string[]
     eventtype?: string[]
+    galleryImages?: {
+      nodes: Array<{
+        sourceUrl: string
+        altText: string
+        caption: string
+      }>
+    }
   }
 }
 
@@ -109,6 +109,7 @@ const GET_GALLERY_BY_SLUG = `
       id
       title
       slug
+      excerpt
       content
       date
       featuredImage {
@@ -127,6 +128,13 @@ const GET_GALLERY_BY_SLUG = `
         location
         skilllevel
         eventtype
+        galleryImages {
+          nodes {
+            sourceUrl
+            altText
+            caption
+          }
+        }
       }
     }
   }
