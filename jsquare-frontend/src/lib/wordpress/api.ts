@@ -467,6 +467,7 @@ const GET_SERVICE_BY_SLUG = `
         ctaText
         whatsappMessageOverride
         videoUrl
+        bannerPosition
         serviceGallery {
           nodes {
             sourceUrl
@@ -668,12 +669,14 @@ const normalizeService = (node: any): Service => {
   if (!details) return node as Service
   const rawCategory = details.serviceCategory
   const rawGallery = details.serviceGallery
+  const rawBannerPos = details.bannerPosition
   return {
     ...node,
     serviceDetails: {
       ...details,
       serviceCategory: Array.isArray(rawCategory) ? rawCategory[0] : rawCategory,
       serviceGallery: rawGallery?.nodes ?? rawGallery ?? [],
+      bannerPosition: Array.isArray(rawBannerPos) ? rawBannerPos[0] : rawBannerPos,
       pricingTiers: PRICING_TIERS_BY_SLUG[node.slug] ?? details.pricingTiers,
     },
   } as Service

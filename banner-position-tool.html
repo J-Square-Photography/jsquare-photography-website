@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>J Square — Banner Position Tool</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0d0d0f;
+    color: #e7e7ea;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 28px 24px 8px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  header h1 { font-weight: 300; font-size: 26px; margin: 0 0 6px; }
+  header p { color: #9a9aa2; margin: 4px 0; font-size: 14px; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 16px 24px 80px; }
+  .card {
+    background: #16161a;
+    border: 1px solid #26262c;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 14px 18px; border-bottom: 1px solid #26262c;
+  }
+  .card-head h2 { font-size: 17px; font-weight: 400; margin: 0; }
+  .frame {
+    position: relative;
+    width: 100%;
+    /* Mirrors a typical desktop banner ratio (~2.6:1). object-position is
+       resolution-independent, so the value works on every screen size. */
+    aspect-ratio: 2.6 / 1;
+    background: #000;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+    overflow: hidden;
+  }
+  .frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+    display: block;
+  }
+  /* Faux header band so you can see legibility against the chosen crop */
+  .topband {
+    position: absolute; inset: 0 0 auto 0; height: 64px;
+    background: linear-gradient(to bottom, rgba(0,0,0,.7), transparent);
+    pointer-events: none;
+    display: flex; align-items: center; padding: 0 18px;
+    font-size: 13px; color: rgba(255,255,255,.85);
+  }
+  .crosshair {
+    position: absolute; width: 26px; height: 26px;
+    margin: -13px 0 0 -13px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.5), 0 0 10px rgba(0,0,0,.6);
+    pointer-events: none;
+    transition: opacity .15s;
+  }
+  .crosshair::before, .crosshair::after {
+    content: ""; position: absolute; background: #fff;
+    box-shadow: 0 0 3px rgba(0,0,0,.7);
+  }
+  .crosshair::before { left: 11px; top: -8px; width: 2px; height: 8px; }
+  .crosshair::after  { top: 11px; left: -8px; height: 2px; width: 8px; }
+  .controls {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px; flex-wrap: wrap;
+  }
+  .val {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 15px; background: #0d0d0f; border: 1px solid #2e2e36;
+    padding: 6px 12px; border-radius: 8px; color: #fff; min-width: 120px;
+  }
+  button {
+    font: inherit; cursor: pointer; border: none; border-radius: 8px;
+    padding: 7px 14px; background: #2d6cdf; color: #fff;
+  }
+  button.ghost { background: #26262c; color: #d6d6db; }
+  button:hover { filter: brightness(1.1); }
+  .hint { color: #8a8a92; font-size: 13px; }
+  .copied { color: #4ade80 !important; }
+  code { background:#0d0d0f; padding:1px 6px; border-radius:5px; color:#cdd; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Banner Position Tool</h1>
+  <p>Click or drag on each banner where the <strong>important part</strong> is (e.g. the faces / the dish). The crop updates live.</p>
+  <p>Then hit <strong>Copy</strong> and paste the value into that service's <code>Banner Image Position</code> field in WordPress.</p>
+</header>
+<div class="wrap" id="wrap"></div>
+
+<script>
+// slug must match the WordPress service slug. src points at the local prepped
+// images (identical to what's uploaded to WP), URL-encoded for spaces.
+const SERVICES = [
+  { slug: 'event-photography',              title: 'Event Photography',                 src: 'Event%20photography/event-photography-4x3.jpg' },
+  { slug: 'event-videography',              title: 'Event Videography',                 src: 'Event%20videography/event-videography-4x3.jpg' },
+  { slug: 'dslr-photobooth',                title: 'DSLR Photobooth',                   src: 'photobooth/dslr-photobooth-4x3.jpg' },
+  { slug: 'wedding-photography-videography',title: 'Wedding Photography & Videography', src: 'wedding/wedding-photography-3x2.jpg' },
+  { slug: 'corporate-photography',          title: 'Corporate Photography',             src: 'corporate/corporate-photography-3x2.jpg' },
+  { slug: 'food-photography',               title: 'Food Photography',                  src: 'food/food-photography-3x2.jpg' },
+  { slug: 'film-production',                title: 'Film Production',                    src: 'film/film-production-3x2.jpg' },
+];
+
+const wrap = document.getElementById('wrap');
+
+SERVICES.forEach((s) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-head">
+      <h2>${s.title}</h2>
+      <span class="hint">${s.slug}</span>
+    </div>
+    <div class="frame">
+      <img src="${s.src}" alt="${s.title}" />
+      <div class="topband">↑ header / logo / breadcrumb sit here</div>
+      <div class="crosshair" style="left:50%; top:50%"></div>
+    </div>
+    <div class="controls">
+      <span class="hint">Position:</span>
+      <span class="val">50% 50%</span>
+      <button class="copy">Copy</button>
+      <button class="ghost reset">Reset to center</button>
+      <span class="hint">Tip: drag slowly to fine-tune.</span>
+    </div>`;
+  wrap.appendChild(card);
+
+  const frame = card.querySelector('.frame');
+  const img = card.querySelector('img');
+  const cross = card.querySelector('.crosshair');
+  const val = card.querySelector('.val');
+  const copyBtn = card.querySelector('.copy');
+  const resetBtn = card.querySelector('.reset');
+  let dragging = false;
+
+  function apply(x, y) {
+    const v = `${x}% ${y}%`;
+    img.style.objectPosition = v;
+    cross.style.left = x + '%';
+    cross.style.top = y + '%';
+    val.textContent = v;
+    val.classList.remove('copied');
+    copyBtn.textContent = 'Copy';
+  }
+  function fromEvent(e) {
+    const r = frame.getBoundingClientRect();
+    let x = Math.round(((e.clientX - r.left) / r.width) * 100);
+    let y = Math.round(((e.clientY - r.top) / r.height) * 100);
+    x = Math.max(0, Math.min(100, x));
+    y = Math.max(0, Math.min(100, y));
+    apply(x, y);
+  }
+
+  frame.addEventListener('pointerdown', (e) => { dragging = true; frame.setPointerCapture(e.pointerId); fromEvent(e); });
+  frame.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e); });
+  frame.addEventListener('pointerup',   () => { dragging = false; });
+
+  copyBtn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(val.textContent); } catch (_) {}
+    val.classList.add('copied');
+    copyBtn.textContent = 'Copied ✓';
+  });
+  resetBtn.addEventListener('click', () => apply(50, 50));
+});
+</script>
+</body>
+</html>

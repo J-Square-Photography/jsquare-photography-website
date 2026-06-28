@@ -90,6 +90,8 @@ export default async function ServiceDetailPage({
   const pricing = service.serviceDetails?.pricingInfo
   const pricingTiers = service.serviceDetails?.pricingTiers || []
   const ctaText = service.serviceDetails?.ctaText || 'Get Quote'
+  // CSS object-position for the banner crop, editable per-service in WordPress.
+  const bannerPosition = service.serviceDetails?.bannerPosition || 'center'
   const customMessage = service.serviceDetails?.whatsappMessageOverride
   const whatsappLink = generateServiceWhatsAppLink(
     DEFAULT_WHATSAPP_NUMBER,
@@ -115,6 +117,7 @@ export default async function ServiceDetailPage({
             fill
             priority
             className="object-cover"
+            style={{ objectPosition: bannerPosition }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 

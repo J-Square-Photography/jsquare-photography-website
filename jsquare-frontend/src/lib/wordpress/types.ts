@@ -66,6 +66,8 @@ export interface ServiceDetails {
   serviceIcon?: string
   serviceGallery?: WPImage[]
   videoUrl?: string
+  // CSS object-position value for the detail-page banner crop (e.g. 'center 25%')
+  bannerPosition?: string
 }
 
 export interface Service {
