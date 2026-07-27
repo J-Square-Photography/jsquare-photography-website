@@ -80,11 +80,12 @@ export function GalleryGrid({ galleries, loading }: GalleryGridProps) {
 
                   {/* Display filters info */}
                   <div className="flex flex-wrap gap-2 text-xs">
-                    {gallery.portfolioDetails?.skillLevel?.[0] && (
-                      <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded capitalize">
-                        {gallery.portfolioDetails.skillLevel[0]}
-                      </span>
-                    )}
+                    {gallery.portfolioDetails?.skillLevel?.[0] &&
+                      gallery.portfolioDetails.skillLevel[0].toUpperCase() !== 'NA' && (
+                        <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded capitalize">
+                          {gallery.portfolioDetails.skillLevel[0]}
+                        </span>
+                      )}
                     {gallery.portfolioDetails?.eventType?.[0] && (
                       <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded capitalize">
                         {gallery.portfolioDetails.eventType[0]}

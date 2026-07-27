@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
@@ -12,29 +12,10 @@ import {
   REVIEW_STATS,
   type GoogleReview,
 } from '@/data/reviews'
+import { getInitials, getRelativeTime } from '@/lib/utils/reviews'
+import { ReviewModal } from './ReviewModal'
 
 gsap.registerPlugin(ScrollTrigger)
-
-/** First letter(s) of a name, used as avatar fallback */
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
-
-/** Compute a human-friendly relative time from an ISO date string */
-function getRelativeTime(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  if (days < 30) return days <= 1 ? 'yesterday' : `${days} days ago`
-  const months = Math.floor(days / 30)
-  if (months < 12) return months === 1 ? 'a month ago' : `${months} months ago`
-  const years = Math.floor(months / 12)
-  return years === 1 ? 'a year ago' : `${years} years ago`
-}
 
 interface TestimonialsSectionProps {
   /** Live reviews fetched server-side from the Google Business Profile API. */
@@ -48,7 +29,10 @@ export const TestimonialsSection = ({
   stats: liveStats,
 }: TestimonialsSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null)
+  const blockquoteObserverRef = useRef<ResizeObserver | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [isTruncated, setIsTruncated] = useState(false)
+  const [selectedReview, setSelectedReview] = useState<GoogleReview | null>(null)
 
   const allReviews: GoogleReview[] =
     liveReviews && liveReviews.length > 0
@@ -93,14 +77,38 @@ export const TestimonialsSection = ({
   useEffect(() => {
     // Re-runs (and so restarts the countdown) whenever activeIndex changes,
     // including from manual arrow/dot navigation — not just auto-advance.
+    if (selectedReview) return // pause while the review modal is open
+
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % reviews.length)
     }, 10000)
 
     return () => clearInterval(interval)
-  }, [reviews.length, activeIndex])
+  }, [reviews.length, activeIndex, selectedReview])
 
   const current = reviews[activeIndex]
+
+  // Callback ref (not a plain ref + effect): with AnimatePresence's
+  // mode="wait", the new review's blockquote node doesn't actually mount
+  // until the previous one's exit animation finishes, on a schedule that
+  // doesn't line up with activeIndex/current changing. Tying the measurement
+  // to this node's real mount/unmount avoids measuring a stale element.
+  const blockquoteRef = useCallback((node: HTMLQuoteElement | null) => {
+    blockquoteObserverRef.current?.disconnect()
+    blockquoteObserverRef.current = null
+
+    if (!node) return
+
+    const checkTruncation = () => {
+      setIsTruncated(node.scrollHeight > node.clientHeight + 1)
+    }
+
+    checkTruncation()
+
+    const ro = new ResizeObserver(checkTruncation)
+    ro.observe(node)
+    blockquoteObserverRef.current = ro
+  }, [])
 
   const goToPrevious = () =>
     setActiveIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
@@ -195,7 +203,7 @@ export const TestimonialsSection = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 md:p-12 min-h-[520px] md:min-h-[380px] flex items-center"
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 md:p-12 min-h-[540px] md:min-h-[400px] flex items-center"
             >
               <div className="w-full flex flex-col md:flex-row items-center gap-8">
                 {/* Avatar */}
@@ -238,9 +246,23 @@ export const TestimonialsSection = ({
 
                   {/* Quote — clamped so card height (and arrow position) stays
                       stable across reviews of very different lengths */}
-                  <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light mb-6 leading-relaxed line-clamp-6">
+                  <blockquote
+                    ref={blockquoteRef}
+                    className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light mb-6 leading-relaxed line-clamp-6"
+                  >
                     &ldquo;{current.reviewText}&rdquo;
                   </blockquote>
+
+                  {isTruncated && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedReview(current)}
+                      aria-label={`Read full review from ${current.reviewerName}`}
+                      className="text-sm font-light text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline underline-offset-2 transition-colors -mt-4 mb-6 block"
+                    >
+                      Read more
+                    </button>
+                  )}
 
                   {/* Reviewer Info */}
                   <div>
@@ -254,6 +276,15 @@ export const TestimonialsSection = ({
                 </div>
               </div>
             </motion.div>
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {selectedReview && (
+              <ReviewModal
+                review={selectedReview}
+                onClose={() => setSelectedReview(null)}
+              />
+            )}
           </AnimatePresence>
         </div>
 

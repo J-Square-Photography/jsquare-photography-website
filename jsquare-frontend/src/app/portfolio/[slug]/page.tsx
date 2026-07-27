@@ -135,16 +135,17 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 </div>
               </div>
 
-              {gallery.portfolioDetails?.skillLevel?.[0] && (
-                <div className="group">
-                  <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
-                    {gallery.portfolioDetails.skillLevel[0]}
+              {gallery.portfolioDetails?.skillLevel?.[0] &&
+                gallery.portfolioDetails.skillLevel[0].toUpperCase() !== 'NA' && (
+                  <div className="group">
+                    <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
+                      {gallery.portfolioDetails.skillLevel[0]}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                      Skill Level
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Skill Level
-                  </div>
-                </div>
-              )}
+                )}
 
               {gallery.portfolioDetails?.eventType?.[0] && (
                 <div className="group">
