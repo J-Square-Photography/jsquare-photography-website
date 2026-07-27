@@ -1,7 +1,12 @@
 // =============================================================================
-// Google Reviews Data
+// Google Reviews Data — offline fallback
 // =============================================================================
-// To update reviews:
+// As of the Google Business Profile API integration (see
+// GOOGLE_REVIEWS_INTEGRATION.md), TestimonialsSection prefers live reviews
+// fetched server-side via src/lib/google-business/reviews.ts. The data below
+// is only used when that live fetch isn't configured or fails, so it stays
+// as a manually-synced snapshot rather than something to update on every
+// review. To refresh it:
 // 1. Go to https://www.google.com/maps/place/J+Square+Photography/
 // 2. Click on the reviews section
 // 3. Copy review details into the googleReviews array below

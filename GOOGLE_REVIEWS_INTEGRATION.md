@@ -21,63 +21,75 @@ Tradeoff accepted: Business Profile API requires a Google-approved access reques
 (days to weeks), vs. Places API which works immediately. Decided the wait is worth it
 for higher review count + no ongoing cost.
 
-## Current status (as of 2026-07-08)
+## Status: access approved, code implemented (2026-07-27)
 
-- [x] Manually synced all 13 real reviews from the Google Maps listing into
-      `jsquare-frontend/src/data/reviews.ts` (`googleReviews` array) as a stopgap.
-      `REVIEW_STATS` updated to `{ totalReviews: 13, averageRating: 4.9 }`.
-      Verified rendering in `TestimonialsSection.tsx` (13 carousel dots, correct
-      relative-time computation).
-- [x] Created Google Cloud project: **"J Square Photography"**.
-- [x] Enabled APIs: `My Business Account Management API`, `My Business Business
-      Information API`.
-- [x] Configured OAuth consent screen (now called **Google Auth Platform** in Cloud
-      Console UI): User type = **External**, Publishing status = **Testing**.
-      Test users added: `jianjie95@gmail.com`, `jsquarephotographysg@gmail.com`.
-- [x] Created OAuth Client ID (type: Web application, name: "J Square Website -
-      Reviews Sync").
-      - Authorized JavaScript origins: `http://localhost:3000`
-      - Authorized redirect URIs: `http://localhost:3000/api/google-reviews/callback`
-        (route doesn't exist in the codebase yet — to be built, see below)
-      - **Client ID / Secret generated but NOT YET saved to `.env.local`** — user is
-        holding off pasting them in until ready to resume this work.
-- [x] **Submitted the Business Profile API access request** via
-      https://developers.google.com/my-business/content/prereqs
-      — **status: pending Google approval** (typically days to a few weeks).
+Google approved the access request. Note there are two separate APIs in play — don't
+confuse them:
+- **Business Profile Performance API** — impressions/views/calls metrics only. Already
+  enabled, but **not used here**; it has no reviews data.
+- **`mybusiness.googleapis.com/v4`** (legacy "Google My Business API") — this is the
+  one that actually serves `accounts.locations.reviews.list`. This is what the approval
+  email unblocked.
 
-## Blocked on
+### What's built
 
-Google approving the access request for the actual reviews-serving API
-(`mybusiness.googleapis.com`, the legacy "Google My Business API" v4 — this is
-separate from the two APIs already enabled, and is gated/hidden until approval).
-**Nothing else can proceed until this comes through.** No action needed from the user
-while waiting — just check inbox/Cloud Console notifications periodically.
+- `jsquare-frontend/src/lib/google-business/reviews.ts` — server-only module.
+  Exchanges the stored refresh token for an access token, calls
+  `GET https://mybusiness.googleapis.com/v4/{accounts/*/locations/*}/reviews`,
+  transforms the response into the existing `GoogleReview[]` shape. Returns `null` on
+  any missing env var or API error, so the site always has something to render.
+- `jsquare-frontend/src/app/api/google-reviews/authorize/route.ts` +
+  `.../callback/route.ts` — one-time local-only OAuth flow to mint the refresh token.
+  Not linked from the site; the OAuth client's redirect URI is restricted to
+  `http://localhost:3000`, so it can't be hit in production.
+- `jsquare-frontend/scripts/list-google-business-locations.mjs` — one-off script
+  (`npm run sync:list-locations`) that lists your Business Profile accounts/locations
+  so you can find the exact `accounts/{accountId}/locations/{locationId}` resource
+  name (the Maps share link isn't enough to derive this).
+- `jsquare-frontend/src/app/page.tsx` now fetches `fetchLiveGoogleReviews()`
+  server-side in parallel with the other page data and passes `reviews`/`stats` into
+  `TestimonialsSection`. If the live fetch returns `null` (not configured yet, or an
+  API hiccup), it silently falls back to the curated list already in
+  `src/data/reviews.ts` — the site never breaks because of this integration.
+- **How "live" it is**: the reviews `fetch()` participates in the page's existing ISR
+  cache (`export const revalidate = 60` in `page.tsx`), so it re-fetches from Google in
+  the background at most every 60 seconds under traffic — no cron job, no extra
+  storage needed.
+- `jsquare-frontend/.env.local.example` documents the 4 required env vars.
 
-## Next steps once access is approved
+## Your turn — finishing local setup
 
-1. User pastes `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` into
-   `jsquare-frontend/.env.local` (gitignored — follow existing pattern like
-   `SUPABASE_SERVICE_ROLE_KEY`).
-2. Look up J Square Photography's Business Profile **location resource name**
-   (`accounts/{accountId}/locations/{locationId}`) needed to query reviews for the
-   right listing.
-3. Build `/api/google-reviews/callback` route in the Next.js app — receives the
-   OAuth authorization code, exchanges it for tokens.
-4. Run a **one-time manual authorization flow** (visit the Google consent URL,
-   approve as the business owner) to mint a long-lived **refresh token**. Store the
-   refresh token server-side (env var, not committed).
-5. Build the sync logic: server-side fetch using the refresh token → Business
-   Profile API `reviews` endpoint → transform into `GoogleReview[]` shape → replace
-   (or supplement) the manual `googleReviews` array in `reviews.ts`. Likely as a
-   scheduled job / build-time fetch, not live client-side (avoid exposing tokens to
-   the browser).
-6. Decide sync cadence (e.g., re-fetch on each deploy, or a cron/revalidate route).
+Nothing above works yet without secrets only you can retrieve/mint. To go live:
+
+1. Copy `jsquare-frontend/.env.local.example` to `jsquare-frontend/.env.local`.
+2. In [Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials),
+   open the **"J Square Website - Reviews Sync"** OAuth client and copy its **Client
+   ID** and **Client Secret** into `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET`
+   in `.env.local`. (Paste these directly into the file — not into chat.)
+3. Run `npm run dev` in `jsquare-frontend/`, then visit
+   `http://localhost:3000/api/google-reviews/authorize` in your browser and sign in as
+   `jsquarephotographysg@gmail.com` (the business account). You'll land on a page
+   showing `GOOGLE_OAUTH_REFRESH_TOKEN=...` — copy that line into `.env.local`.
+4. Run `npm run sync:list-locations`. It'll print something like:
+   ```
+   Account: J Square Photography (accounts/123456789)
+     - J Square Photography
+       GOOGLE_BUSINESS_LOCATION=accounts/123456789/locations/987654321
+   ```
+   Copy that `GOOGLE_BUSINESS_LOCATION=` line into `.env.local`.
+5. Restart `npm run dev` and reload the site — the Client Stories section should now
+   show live reviews. Check the terminal for `console.error` output if it's still
+   showing the fallback list (most likely cause: a typo in one of the 4 env vars, or
+   the location resource name).
+6. When deploying, add all 4 vars as environment variables in Vercel (Production +
+   Preview). Do **not** add a production redirect URI for the OAuth client — the
+   refresh token is minted once, locally, and reused indefinitely (until revoked).
 
 ## Reference
 
-- Reviews data file: `jsquare-frontend/src/data/reviews.ts`
+- Reviews data file (offline fallback): `jsquare-frontend/src/data/reviews.ts`
+- Live fetch module: `jsquare-frontend/src/lib/google-business/reviews.ts`
 - Rendered by: `jsquare-frontend/src/components/sections/TestimonialsSection.tsx`
 - Google Maps listing: https://maps.app.goo.gl/oGtyCP7yGniixQscA
 - Google Cloud project name: "J Square Photography"
-- Business Profile API prerequisites/access request:
-  https://developers.google.com/my-business/content/prereqs
+- Reviews API reference: https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews/list

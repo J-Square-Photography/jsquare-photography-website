@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:list-locations": "node scripts/list-google-business-locations.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

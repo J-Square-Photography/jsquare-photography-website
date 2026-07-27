@@ -81,3 +81,19 @@ export interface Service {
   }
   serviceDetails?: ServiceDetails
 }
+
+// Team Member types
+export interface TeamMemberSocial {
+  instagram?: string
+  linkedin?: string
+}
+
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  bio?: string
+  details?: string
+  imageUrl?: string
+  social?: TeamMemberSocial
+}

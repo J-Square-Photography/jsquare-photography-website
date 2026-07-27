@@ -36,12 +36,33 @@ function getRelativeTime(dateStr: string): string {
   return years === 1 ? 'a year ago' : `${years} years ago`
 }
 
-export const TestimonialsSection = () => {
+interface TestimonialsSectionProps {
+  /** Live reviews fetched server-side from the Google Business Profile API. */
+  reviews?: GoogleReview[]
+  /** Live aggregate stats from the same source. */
+  stats?: { totalReviews: number; averageRating: number }
+}
+
+export const TestimonialsSection = ({
+  reviews: liveReviews,
+  stats: liveStats,
+}: TestimonialsSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const reviews: GoogleReview[] =
-    googleReviews.length > 0 ? googleReviews : fallbackReviews
+  const allReviews: GoogleReview[] =
+    liveReviews && liveReviews.length > 0
+      ? liveReviews
+      : googleReviews.length > 0
+        ? googleReviews
+        : fallbackReviews
+
+  // Only showcase 5-star reviews in the carousel; the badge/stat tile below
+  // still shows the true aggregate (stats), which covers every review.
+  const fiveStarReviews = allReviews.filter((review) => review.rating === 5)
+  const reviews = fiveStarReviews.length > 0 ? fiveStarReviews : allReviews
+
+  const stats = liveStats ?? REVIEW_STATS
 
   useEffect(() => {
     const section = sectionRef.current
@@ -130,7 +151,7 @@ export const TestimonialsSection = () => {
               Google Reviews
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              {REVIEW_STATS.averageRating} ({REVIEW_STATS.totalReviews})
+              {stats.averageRating} ({stats.totalReviews})
             </span>
           </a>
         </div>
@@ -262,7 +283,7 @@ export const TestimonialsSection = () => {
               <div className="text-sm text-gray-600 dark:text-gray-400">Clients Served</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-light text-gray-900 dark:text-white mb-2">{REVIEW_STATS.averageRating}</div>
+              <div className="text-3xl font-light text-gray-900 dark:text-white mb-2">{stats.averageRating}</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Average Rating</div>
             </div>
           </div>

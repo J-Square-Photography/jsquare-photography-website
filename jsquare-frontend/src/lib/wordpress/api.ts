@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { SkillLevel, EventType, Service, ServiceCategory } from './types'
+import { SkillLevel, EventType, Service, ServiceCategory, TeamMember } from './types'
 import {
   PHOTOGRAPHY_PRICING_TIERS,
   VIDEOGRAPHY_PRICING_TIERS,
@@ -737,4 +737,59 @@ export const getMainServices = async (): Promise<Service[]> => {
 
 export const getAdditionalServices = async (): Promise<Service[]> => {
   return getServices('additional');
+};
+
+// ============================================================================
+// Team Members API
+// ============================================================================
+
+const GET_TEAM_MEMBERS = `
+  query GetTeamMembers($first: Int = 20) {
+    teamMembers(first: $first, where: { orderby: { field: MENU_ORDER, order: ASC } }) {
+      nodes {
+        id
+        title
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+          }
+        }
+        teamMemberDetails {
+          role
+          bio
+          details
+          instagramHandle
+          linkedinHandle
+        }
+      }
+    }
+  }
+`;
+
+export const getTeamMembers = async (): Promise<TeamMember[]> => {
+  try {
+    const data: any = await graphqlClient.request(GET_TEAM_MEMBERS);
+
+    if (!data?.teamMembers?.nodes?.length) {
+      console.log('No team members found in WordPress, using fallback data');
+      return [];
+    }
+
+    return data.teamMembers.nodes.map((node: any): TeamMember => ({
+      id: node.id,
+      name: node.title,
+      role: node.teamMemberDetails?.role ?? '',
+      bio: node.teamMemberDetails?.bio,
+      details: node.teamMemberDetails?.details,
+      imageUrl: node.featuredImage?.node?.sourceUrl,
+      social: {
+        instagram: node.teamMemberDetails?.instagramHandle,
+        linkedin: node.teamMemberDetails?.linkedinHandle,
+      },
+    }));
+  } catch (error) {
+    console.error('Error fetching team members:', error);
+    return [];
+  }
 };

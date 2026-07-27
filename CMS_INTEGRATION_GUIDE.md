@@ -24,16 +24,16 @@
 | **About** | `AboutSection.tsx`, `api.ts` | Partial CMS | Fetches from WP `about-us` page + ACF `aboutUs` group; falls back to hardcoded defaults |
 | **Recent Galleries** | `RecentGalleries.tsx`, `api.ts` | CMS with fallback | Fetches posts with category `gallery` |
 | **Services** | `ServicesSection.tsx`, `api.ts` | CMS with fallback | Custom post type `service` with `serviceDetails` ACF group; `FALLBACK_SERVICES` array in api.ts |
-| **Team** | `TeamSection.tsx` | Hardcoded | 4 placeholder members with Unsplash images |
+| **Team** | `TeamSection.tsx`, `api.ts` | CMS with fallback | `getTeamMembers()` queries CPT `team_member` with `teamMemberDetails` ACF group; falls back to 3 hardcoded members in `TeamSection.tsx`. See `TEAM_CMS_SETUP.md` for the WP-side setup |
 | **Testimonials** | `TestimonialsSection.tsx` | Hardcoded | 5 placeholder testimonials + trust-badge stats |
 | **Pricing** | `api.ts` | Hardcoded | 3 arrays: `PHOTOGRAPHY_PRICING_TIERS`, `VIDEOGRAPHY_PRICING_TIERS`, `PHOTOBOOTH_PRICING_TIERS` |
 | **Featured Story** | `FeaturedStory.tsx`, `api.ts` | CMS with fallback | Fetches posts with category `story` |
 | **Contact** | `page.tsx` (lines 80-114) | Hardcoded | CTA heading, description, WhatsApp number, email |
 | **Footer** | `Footer.tsx` | Hardcoded | Company tagline, social URLs, phone, email, location, service list |
 
-**Already connected to CMS (no work needed):** Galleries, Services (CPT), About (partial), Stories.
+**Already connected to CMS (no work needed):** Galleries, Services (CPT), About (partial), Stories, Team (frontend wired — needs WP-side setup, see `TEAM_CMS_SETUP.md`).
 
-**Needs CMS integration:** Hero, Team, Testimonials, Pricing, Contact, Footer, trust-badge stats.
+**Needs CMS integration:** Hero, Testimonials, Pricing, Contact, Footer, trust-badge stats.
 
 ---
 
@@ -320,14 +320,18 @@ query GetTeamMembers {
       teamMemberDetails {
         role
         bio
+        details
         instagramHandle
         linkedinHandle
-        displayOrder
       }
     }
   }
 }
 ```
+
+> **Implemented as-is** in `api.ts` / `types.ts`. Sorting uses `page-attributes`
+> (menu order) rather than a `displayOrder` ACF field, and a `details` field
+> was added for the longer modal bio (see `TEAM_CMS_SETUP.md`).
 
 ### 5c. Testimonials
 
@@ -797,12 +801,12 @@ Use this checklist when implementing. Each section follows the same pattern:
 
 ### Team Members
 
-- [ ] Register `team_member` CPT in `functions.php`
-- [ ] Create "Team Member Details" field group in SCF
-- [ ] Add real team members in WP Admin
-- [ ] Add `TeamMember` type to `types.ts` (interface already exists in `TeamSection.tsx` — move to `types.ts`)
-- [ ] Add `GET_TEAM_MEMBERS` query + `getTeamMembers()` to `api.ts`
-- [ ] Pass fetched members from `page.tsx` to `<TeamSection members={...} />`
+- [ ] Register `team_member` CPT in `functions.php` (WP side — see `TEAM_CMS_SETUP.md`)
+- [ ] Create "Team Member Details" field group in SCF (WP side — see `TEAM_CMS_SETUP.md`)
+- [ ] Add real team members in WP Admin (WP side — see `TEAM_CMS_SETUP.md`)
+- [x] Add `TeamMember` type to `types.ts` (moved out of `TeamSection.tsx`, now includes `details`)
+- [x] Add `GET_TEAM_MEMBERS` query + `getTeamMembers()` to `api.ts`
+- [x] Pass fetched members from `page.tsx` to `<TeamSection members={...} />`
 
 ### Testimonials
 

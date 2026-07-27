@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
+import { TeamMember } from '@/lib/wordpress/types'
 
 // Dynamic import for GSAP to avoid SSR issues
 let gsap: any
@@ -11,19 +12,6 @@ if (typeof window !== 'undefined') {
   gsap = require('gsap').gsap
   ScrollTrigger = require('gsap/ScrollTrigger').ScrollTrigger
   gsap.registerPlugin(ScrollTrigger)
-}
-
-interface TeamMember {
-  id: string
-  name: string
-  role: string
-  bio?: string
-  details?: string
-  imageUrl?: string
-  social?: {
-    instagram?: string
-    linkedin?: string
-  }
 }
 
 interface TeamSectionProps {

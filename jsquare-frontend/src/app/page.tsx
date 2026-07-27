@@ -13,17 +13,21 @@ import {
   getAboutSectionContent,
   getMainServices,
   getAdditionalServices,
+  getTeamMembers,
 } from "@/lib/wordpress/api"
+import { fetchLiveGoogleReviews } from "@/lib/google-business/reviews"
 
 // Revalidate this page every 60 seconds
 export const revalidate = 60
 
 export default async function Home() {
   // Fetch all data in parallel
-  const [aboutContent, mainServices, additionalServices] = await Promise.all([
+  const [aboutContent, mainServices, additionalServices, teamMembers, liveReviews] = await Promise.all([
     getAboutSectionContent(),
     getMainServices(),
     getAdditionalServices(),
+    getTeamMembers(),
+    fetchLiveGoogleReviews(),
   ])
 
   return (
@@ -64,12 +68,12 @@ export default async function Home() {
 
         {/* Team Section */}
         <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-950" />}>
-          <TeamSection />
+          <TeamSection members={teamMembers.length ? teamMembers : undefined} />
         </Suspense>
 
         {/* Testimonials Section */}
         <Suspense fallback={<div className="h-96 bg-gray-50 dark:bg-gray-950" />}>
-          <TestimonialsSection />
+          <TestimonialsSection reviews={liveReviews?.reviews} stats={liveReviews?.stats} />
         </Suspense>
 
         {/* Stories Section */}
