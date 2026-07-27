@@ -87,18 +87,24 @@ export const TestimonialsSection = ({
       )
     }, section)
 
-    // Auto-rotate testimonials
+    return () => ctx.revert()
+  }, [])
+
+  useEffect(() => {
+    // Re-runs (and so restarts the countdown) whenever activeIndex changes,
+    // including from manual arrow/dot navigation — not just auto-advance.
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % reviews.length)
-    }, 5000)
+    }, 10000)
 
-    return () => {
-      clearInterval(interval)
-      ctx.revert()
-    }
-  }, [reviews.length])
+    return () => clearInterval(interval)
+  }, [reviews.length, activeIndex])
 
   const current = reviews[activeIndex]
+
+  const goToPrevious = () =>
+    setActiveIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
+  const goToNext = () => setActiveIndex((prev) => (prev + 1) % reviews.length)
 
   return (
     <section
@@ -157,7 +163,31 @@ export const TestimonialsSection = ({
         </div>
 
         {/* Main Testimonial Display */}
-        <div className="max-w-4xl mx-auto mb-12">
+        <div className="relative max-w-4xl mx-auto mb-12">
+          {/* Prev/Next Arrows */}
+          {reviews.length > 1 && (
+            <>
+              <button
+                onClick={goToPrevious}
+                className="absolute left-0 md:-left-14 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-gray-600 dark:text-gray-300 transition-shadow"
+                aria-label="Previous testimonial"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={goToNext}
+                className="absolute right-0 md:-right-14 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-sm hover:shadow-md text-gray-600 dark:text-gray-300 transition-shadow"
+                aria-label="Next testimonial"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
