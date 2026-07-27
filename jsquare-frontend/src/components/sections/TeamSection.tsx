@@ -250,7 +250,7 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
               <div className="w-10 h-px bg-gray-300 dark:bg-gray-600 my-6" />
 
               <div className="space-y-4">
-                {(selectedMember.details || selectedMember.bio || '').split('\n\n').map((para, i) => (
+                {(selectedMember.details || selectedMember.bio || '').split(/\r?\n\r?\n/).map((para, i) => (
                   <p key={i} className="text-gray-600 dark:text-gray-300 font-light leading-relaxed text-sm">
                     {para}
                   </p>

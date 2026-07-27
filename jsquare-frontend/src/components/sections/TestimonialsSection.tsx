@@ -195,9 +195,9 @@ export const TestimonialsSection = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 md:p-12"
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 md:p-12 min-h-[520px] md:min-h-[380px] flex items-center"
             >
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+              <div className="w-full flex flex-col md:flex-row items-center gap-8">
                 {/* Avatar */}
                 <div className="flex-shrink-0">
                   <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden ring-4 ring-gray-100 dark:ring-gray-800">
@@ -236,8 +236,9 @@ export const TestimonialsSection = ({
                     ))}
                   </div>
 
-                  {/* Quote */}
-                  <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light mb-6 leading-relaxed">
+                  {/* Quote — clamped so card height (and arrow position) stays
+                      stable across reviews of very different lengths */}
+                  <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 font-light mb-6 leading-relaxed line-clamp-6">
                     &ldquo;{current.reviewText}&rdquo;
                   </blockquote>
 
