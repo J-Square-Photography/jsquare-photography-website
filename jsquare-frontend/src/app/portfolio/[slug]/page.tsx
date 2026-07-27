@@ -124,9 +124,9 @@ export default async function GalleryPage({ params }: { params: { slug: string }
         {/* Gallery Info Section with Stats */}
         <section className="py-16 px-6 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
           <div className="container mx-auto max-w-6xl">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            <div className="flex flex-wrap justify-center gap-x-12 gap-y-8 md:gap-x-16 text-center">
               {/* Stats */}
-              <div className="group">
+              <div className="group min-w-[120px]">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">
                   {galleryImages.length}
                 </div>
@@ -137,7 +137,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
 
               {gallery.portfolioDetails?.skillLevel?.[0] &&
                 gallery.portfolioDetails.skillLevel[0].toUpperCase() !== 'NA' && (
-                  <div className="group">
+                  <div className="group min-w-[120px]">
                     <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
                       {gallery.portfolioDetails.skillLevel[0]}
                     </div>
@@ -148,7 +148,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 )}
 
               {gallery.portfolioDetails?.eventType?.[0] && (
-                <div className="group">
+                <div className="group min-w-[120px]">
                   <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2 capitalize">
                     {gallery.portfolioDetails.eventType[0]}
                   </div>
@@ -158,7 +158,7 @@ export default async function GalleryPage({ params }: { params: { slug: string }
                 </div>
               )}
 
-              <div className="group">
+              <div className="group min-w-[120px]">
                 <div className="text-3xl font-extralight text-gray-900 dark:text-white mb-2">
                   {gallery.portfolioDetails?.location || 'Singapore'}
                 </div>
