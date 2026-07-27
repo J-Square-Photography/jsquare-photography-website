@@ -183,6 +183,11 @@ export const TeamSection = ({ members }: TeamSectionProps) => {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   {member.role}
                 </p>
+                {member.bio && (
+                  <p className="text-sm text-gray-500 dark:text-gray-500 font-light leading-relaxed">
+                    {member.bio}
+                  </p>
+                )}
               </div>
             </div>
           ))}
