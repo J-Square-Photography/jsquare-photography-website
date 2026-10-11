@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { WhatsAppFloatingButton } from '@/components/ui/WhatsAppFloatingButton';
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -75,6 +76,7 @@ export default function RootLayout({
       <body className={`${montserrat.variable} font-sans antialiased bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-200`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           {children}
+          <WhatsAppFloatingButton />
         </ThemeProvider>
       </body>
     </html>
